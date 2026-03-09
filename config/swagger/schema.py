@@ -14,9 +14,9 @@ class BothHttpAndHttpsSchemaGenerator(OpenAPISchemaGenerator):
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='Musiqa Maktablari API',
+        title='Forum API',
         default_version='v1',
-        description='Musiqa Maktablari'
+        description='Xalqaro Ilmiy-Amaliy Forum API'
     ),
     public=True,
     generator_class=BothHttpAndHttpsSchemaGenerator,

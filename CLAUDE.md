@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BMSB is a **single-tenant school management system** built with Django 5.2 + Django REST Framework. The backend is Uzbek-language oriented with i18n support for Uzbek (default), Russian, and English via `django-modeltranslation`.
+This is a **Forum/Conference Management System** built with Django 5.2 + Django REST Framework. The backend is Uzbek-language oriented with i18n support for Uzbek (default), Russian, and English via `django-modeltranslation`.
 
 ## Development Commands
 
@@ -14,12 +14,11 @@ docker compose -f dev.yml up -d --build     # Start dev environment (web on :802
 docker compose -f dev.yml down               # Stop
 
 # Django management (inside container or local venv)
-python manage.py makemigrations              # Create migrations (never specify migration names)
+python manage.py makemigrations              # Create migrations
 python manage.py migrate                     # Apply migrations
 python manage.py check                       # System check
 python manage.py collectstatic --noinput     # Collect static files
-python manage.py populate_site_settings      # Create default SiteSettings singleton
-python manage.py add_timetables              # Create default timetable entries
+python manage.py populate_site_settings      # Create default settings (MainSettings, Footer, Contact)
 
 # Settings module
 DJANGO_SETTINGS_MODULE=config.settings.develop   # Dev (default in manage.py)
@@ -41,28 +40,31 @@ All models inherit from `BaseModel` which provides `created_at`, `updated_at`, `
 `apps/user/models.py` — `User` extends `AbstractUser`. `AUTH_USER_MODEL = 'user.User'`.
 
 ### App Responsibilities
-- **common** — Base models, mixins, middleware, utilities, validators, image compression, custom DRF exception handler
-- **main** — Core models: Teacher, Direction, FAQ, Vacancy, Staff, Leader, Banner, Menu (MPTT), TimeTable, Document, Honors, Comments, ContactForm, SiteSettings, EduInfo
-- **news** — News articles and announcements
-- **media** — Media collections (images, videos)
-- **service** — Cultural/art services
-- **resource** — Educational resources (YouTube links, PDF files)
+- **common** — Base models, mixins, middleware, utilities, validators, image compression, TinyMCE image uploads
+- **main** — All forum models organized in 3 sections:
+  - **Settings (singletons):** MainSettings, Footer, Contact
+  - **Content:** Event (with EventSchedule, Speaker, EventMedia inlines), News, Supporter, Sponsor, FAQ, Comment, PastForum
+  - **Forms (submissions):** PresentationSubmission, PartnerApplication, CertificateCheck
+- **user** — Custom user model
 
 ### API Structure
-All APIs are under `/api/` with per-app URL routing:
-- `/api/` — main + common apps
-- `/api/news/`, `/api/media/`, `/api/resources/`, `/api/services/`
+All APIs are under `/api/`:
+- `/api/settings/`, `/api/footer/`, `/api/contact/` — Singleton settings
+- `/api/events/`, `/api/events/<slug>/` — Events with schedules, speakers, media
+- `/api/news/`, `/api/supporters/`, `/api/sponsors/`, `/api/faqs/`, `/api/comments/`, `/api/past-forums/` — Content
+- `/api/forms/presentation/`, `/api/forms/partner/`, `/api/forms/certificate-check/` — Form submissions (POST)
 - `/api/swagger/` — Swagger UI (drf-yasg)
 
 ## Key Patterns
 
 1. **UniqueConstraint on slug fields** (never use `unique=True` on slug fields):
    - `UniqueConstraint(fields=['slug'], name='unique_modelname_slug')`
-2. **Translation** — All user-facing text fields must be registered in each app's `translation.py` using `django-modeltranslation`
-3. **File uploads** — Use `generate_upload_path` from `apps/common/utils.py` (auto-handles duplicates with UUID suffix). Validate with `file_size` (5MB) or `file_size_50` (50MB) from `apps/common/validators.py`
-4. **New features must follow established patterns** — model + translation + admin + serializer + view + URL. See existing apps (e.g., FAQ, Vacancy, Staff) as templates
+2. **Translation** — All user-facing text fields must be registered in `apps/main/translation.py` using `django-modeltranslation`
+3. **File uploads** — Use `generate_upload_path` from `apps/common/utils.py`. Validate with `file_size` (5MB) or `file_size_50` (50MB) from `apps/common/validators.py`
+4. **New features must follow established patterns** — model + translation + admin + serializer + view + URL
 5. **Verbose names in Uzbek** — All model field `verbose_name` values should be in Uzbek
-6. **SiteSettings** is a singleton — only one instance should exist
+6. **Singleton models** — MainSettings, Footer, Contact allow only one instance (enforced in admin)
+7. **Form submissions are read-only in admin** — PresentationSubmission, PartnerApplication, CertificateCheck cannot be added or edited via admin
 
 ## Deployment
 

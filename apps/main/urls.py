@@ -1,72 +1,36 @@
 from django.urls import path
-from .views.menu import MenuView
-from .views.school_life import SchoolLifeView
-from .views.banner import BannerListView
-from .views.direction import DirectionListView, DirectionDetailView
-from .views.teacher import TeacherListView, TeacherDetailView
-from .views.faq import FAQListView
-from .views.vacancy import VacancyListView
-from .views.document import DocumentListView, DocumentCategoryListView
-from .views.timetable import TimeTableListView
-from .views.staff import StaffListView
-from .views.leader import LeaderListView, LeaderDetailView
-from .views.honor import HonorsListView, HonorsDetailView
-from .views.contact_form import ContactFormCreateView
-from .views.comments import CommentsListView, CommentsDetailView
-from .views.edu_info import EduInfoListView
-from .views.site_settings import SiteSettingsView
-from .views.email_subscription import EmailSubscriptionCreateView
+from .views.settings import MainSettingsView, FooterView, ContactView
+from .views.event import EventListView, EventDetailView
+from .views.content import (
+    NewsListView, SupporterListView, SponsorListView,
+    FAQListView, CommentListView, PastForumListView,
+)
+from .views.forms import (
+    PresentationSubmissionCreateView,
+    PartnerApplicationCreateView,
+    CertificateCheckCreateView,
+)
 
 urlpatterns = [
-    path('menus/', MenuView.as_view(), name='menu'),
-    path('banners/', BannerListView.as_view(), name='banner'),
-    path('school-lifes/', SchoolLifeView.as_view(), name='school-life'),
+    # Settings endpoints (singletons)
+    path('settings/', MainSettingsView.as_view(), name='main-settings'),
+    path('footer/', FooterView.as_view(), name='footer'),
+    path('contact/', ContactView.as_view(), name='contact'),
 
-    # Direction endpoints
-    path('directions/', DirectionListView.as_view(), name='direction-list'),
-    path('directions/<slug:slug>/', DirectionDetailView.as_view(), name='direction-detail'),
+    # Event endpoints
+    path('events/', EventListView.as_view(), name='event-list'),
+    path('events/<slug:slug>/', EventDetailView.as_view(), name='event-detail'),
 
-    # Teacher endpoints
-    path('teachers/', TeacherListView.as_view(), name='teacher-list'),
-    path('teachers/<slug:slug>/', TeacherDetailView.as_view(), name='teacher-detail'),
-
-    # FAQ endpoints
+    # Content endpoints
+    path('news/', NewsListView.as_view(), name='news-list'),
+    path('supporters/', SupporterListView.as_view(), name='supporter-list'),
+    path('sponsors/', SponsorListView.as_view(), name='sponsor-list'),
     path('faqs/', FAQListView.as_view(), name='faq-list'),
+    path('comments/', CommentListView.as_view(), name='comment-list'),
+    path('past-forums/', PastForumListView.as_view(), name='past-forum-list'),
 
-    # Vacancy endpoints
-    path('vacancies/', VacancyListView.as_view(), name='vacancy-list'),
-
-    # TimeTable endpoints
-    path('timetables/', TimeTableListView.as_view(), name='timetable-list'),
-
-    # Document endpoints
-    path('documents/', DocumentListView.as_view(), name='document-list'),
-    path('documents/categories/', DocumentCategoryListView.as_view(), name='document-category-list'),
-
-    # Staff endpoints
-    path('staffs/', StaffListView.as_view(), name='staff-list'),
-
-    # Leader endpoints
-    path('leaders/', LeaderListView.as_view(), name='leader-list'),
-    path('leaders/<slug:slug>/', LeaderDetailView.as_view(), name='leader-detail'),
-
-    # Honor endpoints
-    path('honors/', HonorsListView.as_view(), name='honors-list'),
-    path('honors/<slug:slug>/', HonorsDetailView.as_view(), name='honors-detail'),
-
-    # ContactForm endpoints
-    path('contact-forms/', ContactFormCreateView.as_view(), name='contact-form-create'),
-
-    # Email subscription endpoints
-    path('email-subscription/', EmailSubscriptionCreateView.as_view(), name='email-subscription-create'),
-
-    # Comments endpoints
-    path('comments/', CommentsListView.as_view(), name='comments-list'),
-    path('comments/<int:id>/', CommentsDetailView.as_view(), name='comments-detail'),
-
-    # EduInfo endpoint
-    path('edu-infos/', EduInfoListView.as_view(), name='edu-info-list'),
-
-    # SiteSettings endpoint
-    path('site-text/', SiteSettingsView.as_view(), name='site-text'),
+    # Form submission endpoints
+    path('forms/presentation/', PresentationSubmissionCreateView.as_view(), name='presentation-submit'),
+    path('forms/partner/', PartnerApplicationCreateView.as_view(), name='partner-apply'),
+    path('forms/certificate-check/', CertificateCheckCreateView.as_view(), name='certificate-check'),
 ]

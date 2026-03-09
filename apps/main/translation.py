@@ -1,128 +1,87 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import Menu, Banner, SchoolLife, Direction, DirectionSchool, Subject, MusicalInstrument, TeacherExperience, FAQ, Vacancy, TimeTable, Document, DocumentCategory, Staff, Leader, Honors, HonorAchievements, Comments, EduInfo, SiteSettings
+from .models import (
+    MainSettings, Footer, Contact,
+    Event, EventSchedule, Speaker, EventMedia, News,
+    Supporter, Sponsor, FAQ, Comment, PastForum,
+)
 
 
-class MenuTranslationOptions(TranslationOptions):
-    fields = ('title',)
+class MainSettingsTranslationOptions(TranslationOptions):
+    fields = ('title', 'desc', 'asosiy_qatnashchilar', 'top_menejerlar',
+              'bolim_shaxslari', 'homiylar_va_hamkorlar', 'location')
     required_languages = ('uz',)
 
 
-class BannerTranslationOptions(TranslationOptions):
-    fields = ('title', 'button_text')
+class FooterTranslationOptions(TranslationOptions):
+    fields = ('quote',)
     required_languages = ('uz',)
 
 
-class SchoolLifeTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+class ContactTranslationOptions(TranslationOptions):
+    fields = ('address',)
     required_languages = ('uz',)
 
 
-class DirectionTranslationOptions(TranslationOptions):
+class EventTranslationOptions(TranslationOptions):
+    fields = ('title', 'address', 'content', 'short_desc', 'location')
+    required_languages = ('uz',)
+
+
+class EventScheduleTranslationOptions(TranslationOptions):
     fields = ('name',)
     required_languages = ('uz',)
 
 
-class DirectionSchoolTranslationOptions(TranslationOptions):
-    fields = ('description',)
+class SpeakerTranslationOptions(TranslationOptions):
+    fields = ('full_name', 'job', 'content')
     required_languages = ('uz',)
 
 
-class SubjectTranslationOptions(TranslationOptions):
-    fields = ('name', 'description')
+class EventMediaTranslationOptions(TranslationOptions):
+    fields = ('name',)
     required_languages = ('uz',)
 
 
-class MusicalInstrumentTranslationOptions(TranslationOptions):
-    fields = ('name', 'description')
+class NewsTranslationOptions(TranslationOptions):
+    fields = ('title', 'content')
     required_languages = ('uz',)
 
 
-class TeacherExperienceTranslationOptions(TranslationOptions):
-    fields = ('title',)
+class SupporterTranslationOptions(TranslationOptions):
+    fields = ('company_name',)
+    required_languages = ('uz',)
+
+
+class SponsorTranslationOptions(TranslationOptions):
+    fields = ('company_name',)
     required_languages = ('uz',)
 
 
 class FAQTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
+    fields = ('question', 'answer')
     required_languages = ('uz',)
 
 
-class VacancyTranslationOptions(TranslationOptions):
-    fields = ('title', 'description', 'requirements', 'location')
+class CommentTranslationOptions(TranslationOptions):
+    fields = ('full_name', 'job', 'comment')
     required_languages = ('uz',)
 
 
-class DocumentCategoryTranslationOptions(TranslationOptions):
+class PastForumTranslationOptions(TranslationOptions):
     fields = ('name',)
     required_languages = ('uz',)
 
 
-class DocumentTranslationOptions(TranslationOptions):
-    fields = ('title',)
-    required_languages = ('uz',)
-
-
-class TimeTableTranslationOptions(TranslationOptions):
-    fields = ('title',)
-    required_languages = ('uz',)
-
-
-class StaffTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'position')
-    required_languages = ('uz',)
-
-
-class LeaderTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'position', 'description', 'working_days')
-    required_languages = ('uz',)
-
-
-class HonorsTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'description')
-    required_languages = ('uz',)
-
-
-class HonorAchievementsTranslationOptions(TranslationOptions):
-    fields = ('description', 'address')
-    required_languages = ('uz',)
-
-
-class CommentsTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'comment')
-    required_languages = ('uz',)
-
-
-class EduInfoTranslationOptions(TranslationOptions):
-    fields = ('title', 'description')
-    required_languages = ('uz',)
-
-class SiteSettingsTranslationOptions(TranslationOptions):
-    fields = (
-        'school_life', 'directions', 'numbers', 'teachers', 'honors', 'news',
-        'gallery', 'contact', 'comments', 'faqs', 'leaders', 'vacancies',
-        'documents', 'timetables', 'edu_infos', 'events', 'resources',
-        'culture_services', 'culture_arts', 'fine_arts'
-    )
-    required_languages = ('uz',)
-
-
-translator.register(Menu, MenuTranslationOptions)
-translator.register(Banner, BannerTranslationOptions)
-translator.register(SchoolLife, SchoolLifeTranslationOptions)
-translator.register(Direction, DirectionTranslationOptions)
-translator.register(DirectionSchool, DirectionSchoolTranslationOptions)
-translator.register(Subject, SubjectTranslationOptions)
-translator.register(MusicalInstrument, MusicalInstrumentTranslationOptions)
-translator.register(TeacherExperience, TeacherExperienceTranslationOptions)
+translator.register(MainSettings, MainSettingsTranslationOptions)
+translator.register(Footer, FooterTranslationOptions)
+translator.register(Contact, ContactTranslationOptions)
+translator.register(Event, EventTranslationOptions)
+translator.register(EventSchedule, EventScheduleTranslationOptions)
+translator.register(Speaker, SpeakerTranslationOptions)
+translator.register(EventMedia, EventMediaTranslationOptions)
+translator.register(News, NewsTranslationOptions)
+translator.register(Supporter, SupporterTranslationOptions)
+translator.register(Sponsor, SponsorTranslationOptions)
 translator.register(FAQ, FAQTranslationOptions)
-translator.register(Vacancy, VacancyTranslationOptions)
-translator.register(DocumentCategory, DocumentCategoryTranslationOptions)
-translator.register(Document, DocumentTranslationOptions)
-translator.register(TimeTable, TimeTableTranslationOptions)
-translator.register(Staff, StaffTranslationOptions)
-translator.register(Leader, LeaderTranslationOptions)
-translator.register(Honors, HonorsTranslationOptions)
-translator.register(HonorAchievements, HonorAchievementsTranslationOptions)
-translator.register(Comments, CommentsTranslationOptions)
-translator.register(EduInfo, EduInfoTranslationOptions)
-translator.register(SiteSettings, SiteSettingsTranslationOptions)
+translator.register(Comment, CommentTranslationOptions)
+translator.register(PastForum, PastForumTranslationOptions)

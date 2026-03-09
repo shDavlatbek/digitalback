@@ -10,7 +10,7 @@ env.read_env('.env')
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = env.str('SECRET_KEY', 'django-insecure')
 
 DEBUG = True
 
@@ -40,23 +40,17 @@ DJANGO_APPS = [
 
 MY_APPS = [
     'apps.common',
-    'apps.media',
-    'apps.resource',
     'apps.user',
-    'apps.news',
-    'apps.service',
 ]
 
 
 THIRD_APPS = [
-    'mptt',
     'rest_framework',
     'drf_yasg',
     'corsheaders',
     'django_filters',
     'tinymce',
-    
-    
+
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -157,13 +151,9 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
 MODELTRANSLATION_LANGUAGES = ('uz', 'ru', 'en')
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'ru', 'en')
 
-MODELTRANSLATION_TRANSLATION_FILES = (    
+MODELTRANSLATION_TRANSLATION_FILES = (
     'apps.common.translation',
     'apps.main.translation',
-    'apps.news.translation',
-    'apps.media.translation',
-    'apps.resource.translation',
-    'apps.service.translation',
 )
 
 

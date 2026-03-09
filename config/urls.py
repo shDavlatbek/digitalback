@@ -14,15 +14,11 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
-]   
+]
 
 urlpatterns += [
     path('api/', include('apps.main.urls')),
     path('api/', include('apps.common.urls')),
-    path('api/news/', include('apps.news.urls')),
-    path('api/media/', include('apps.media.urls')),
-    path('api/resources/', include('apps.resource.urls')),
-    path('api/services/', include('apps.service.urls'))
 ]
 
 urlpatterns += swagger_urlpatterns

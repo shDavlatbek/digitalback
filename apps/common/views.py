@@ -62,226 +62,72 @@ class APIDocumentationView(TemplateView):
         # API sections with endpoints
         context['api_sections'] = [
             {
-                'id': 'maktab',
-                'title': 'Maktab',
-                'description': 'Maktab haqida umumiy ma\'lumotlar',
+                'id': 'sozlamalar',
+                'title': 'Sozlamalar',
+                'description': 'Sayt asosiy sozlamalari',
                 'endpoints': [
                     {
                         'method': 'GET',
-                        'path': '/school/',
-                        'description': 'Maktab ma\'lumotlarini olish',
+                        'path': '/settings/',
+                        'description': 'Asosiy sozlamalar',
                         'params': []
                     },
                     {
                         'method': 'GET',
-                        'path': '/menus/',
-                        'description': 'Maktab menyularini olish',
+                        'path': '/footer/',
+                        'description': 'Footer ma\'lumotlari',
                         'params': []
                     },
                     {
                         'method': 'GET',
-                        'path': '/banners/',
-                        'description': 'Banner rasmlarini olish',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/school-lifes/',
-                        'description': 'Maktab hayoti rasmlarini olish',
+                        'path': '/contact/',
+                        'description': 'Aloqa ma\'lumotlari',
                         'params': []
                     }
                 ]
             },
             {
-                'id': 'yonalishlar',
-                'title': 'Yo\'nalishlar',
-                'description': 'Ta\'lim yo\'nalishlari',
+                'id': 'tadbirlar',
+                'title': 'Tadbirlar',
+                'description': 'Forum tadbirlari',
                 'endpoints': [
                     {
                         'method': 'GET',
-                        'path': '/directions/',
-                        'description': 'Barcha yo\'nalishlar ro\'yxati',
+                        'path': '/events/',
+                        'description': 'Barcha tadbirlar ro\'yxati',
                         'params': []
                     },
                     {
                         'method': 'GET',
-                        'path': '/directions/{slug}/',
-                        'description': 'Yo\'nalish tafsilotlari',
+                        'path': '/events/{slug}/',
+                        'description': 'Tadbir tafsilotlari (kun tartibi, spikerlar, media)',
                         'params': [{'name': 'slug', 'type': 'string', 'required': True}]
                     }
                 ]
             },
             {
-                'id': 'oqituvchilar',
-                'title': 'O\'qituvchilar',
-                'description': 'O\'qituvchilar ro\'yxati va ma\'lumotlari',
+                'id': 'kontent',
+                'title': 'Kontent',
+                'description': 'Yangiliklar, FAQ, izohlar va boshqa',
                 'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/teachers/',
-                        'description': 'Barcha o\'qituvchilar ro\'yxati',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/teachers/{slug}/',
-                        'description': 'O\'qituvchi tafsilotlari',
-                        'params': [{'name': 'slug', 'type': 'string', 'required': True}]
-                    }
-                ]
-            },
-            {
-                'id': 'xodimlar',
-                'title': 'Xodimlar va Rahbarlar',
-                'description': 'Maktab xodimlari va rahbarlari',
-                'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/staffs/',
-                        'description': 'Barcha xodimlar ro\'yxati',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/leaders/',
-                        'description': 'Rahbarlar ro\'yxati',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/leaders/{slug}/',
-                        'description': 'Rahbar tafsilotlari',
-                        'params': [{'name': 'slug', 'type': 'string', 'required': True}]
-                    }
-                ]
-            },
-            {
-                'id': 'faxrlarimiz',
-                'title': 'Faxrlarimiz',
-                'description': 'Maktab faxrlari va yutuqlari',
-                'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/honors/',
-                        'description': 'Barcha faxrlar ro\'yxati',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/honors/{slug}/',
-                        'description': 'Faxr tafsilotlari va yutuqlari',
-                        'params': [{'name': 'slug', 'type': 'string', 'required': True}]
-                    }
-                ]
-            },
-            {
-                'id': 'yangiliklar',
-                'title': 'Yangiliklar',
-                'description': 'Maktab yangiliklari va e\'lonlari',
-                'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/news/categories/',
-                        'description': 'Yangilik kategoriyalari',
-                        'params': []
-                    },
                     {
                         'method': 'GET',
                         'path': '/news/',
-                        'description': 'Barcha yangiliklar',
-                        'params': [
-                            {'name': 'category', 'type': 'number', 'required': False},
-                            {'name': 'page', 'type': 'number', 'required': False}
-                        ]
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/news/{slug}/',
-                        'description': 'Yangilik tafsilotlari',
-                        'params': [{'name': 'slug', 'type': 'string', 'required': True}]
-                    }
-                ]
-            },
-            {
-                'id': 'media',
-                'title': 'Media',
-                'description': 'Rasm va video to\'plamlar',
-                'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/media/collections/',
-                        'description': 'Rasm to\'plamlar ro\'yxati',
+                        'description': 'Yangiliklar ro\'yxati',
                         'params': []
                     },
                     {
                         'method': 'GET',
-                        'path': '/media/collections/{slug}/',
-                        'description': 'To\'plamdagi barcha rasmlar',
-                        'params': [{'name': 'slug', 'type': 'string', 'required': True}]
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/media/images/',
-                        'description': 'Rasmlar, bosh sahifa uchun',
+                        'path': '/supporters/',
+                        'description': 'Qo\'llab-quvvatlovchilar',
                         'params': []
                     },
                     {
                         'method': 'GET',
-                        'path': '/media/videos/',
-                        'description': 'Videolar ro\'yxati',
-                        'params': []
-                    }
-                ]
-            },
-            {
-                'id': 'hujjatlar',
-                'title': 'Hujjatlar',
-                'description': 'Rasmiy hujjatlar va o\'quv rejalari',
-                'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/documents/categories/',
-                        'description': 'Hujjat kategoriyalari',
+                        'path': '/sponsors/',
+                        'description': 'Homiylar',
                         'params': []
                     },
-                    {
-                        'method': 'GET',
-                        'path': '/documents/',
-                        'description': 'Barcha hujjatlar',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/timetables/',
-                        'description': 'O\'quv rejalari',
-                        'params': []
-                    }
-                ]
-            },
-            {
-                'id': 'resurslar',
-                'title': 'Resurslar',
-                'description': 'Ta\'lim resurslari',
-                'endpoints': [
-                    {
-                        'method': 'GET',
-                        'path': '/resources/videos/',
-                        'description': 'Video resurslar',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/resources/files/',
-                        'description': 'Fayl resurslar',
-                        'params': []
-                    }
-                ]
-            },
-            {
-                'id': 'boshqa',
-                'title': 'Boshqa',
-                'description': 'Qo\'shimcha ma\'lumotlar',
-                'endpoints': [
                     {
                         'method': 'GET',
                         'path': '/faqs/',
@@ -290,9 +136,57 @@ class APIDocumentationView(TemplateView):
                     },
                     {
                         'method': 'GET',
-                        'path': '/vacancies/',
-                        'description': 'Bo\'sh ish o\'rinlari',
+                        'path': '/comments/',
+                        'description': 'Izohlar',
                         'params': []
+                    },
+                    {
+                        'method': 'GET',
+                        'path': '/past-forums/',
+                        'description': 'O\'tgan forumlar',
+                        'params': []
+                    }
+                ]
+            },
+            {
+                'id': 'formalar',
+                'title': 'Formalar',
+                'description': 'Ariza va so\'rov yuborish',
+                'endpoints': [
+                    {
+                        'method': 'POST',
+                        'path': '/forms/presentation/',
+                        'description': 'Taqdimot bilan chiqish arizasi',
+                        'params': [
+                            {'name': 'full_name', 'type': 'string', 'required': True},
+                            {'name': 'position', 'type': 'string', 'required': True},
+                            {'name': 'organization_name', 'type': 'string', 'required': True},
+                            {'name': 'phone', 'type': 'string', 'required': True},
+                            {'name': 'email', 'type': 'string', 'required': True},
+                            {'name': 'organization_website', 'type': 'string', 'required': False},
+                            {'name': 'presentation_topic', 'type': 'string', 'required': True},
+                            {'name': 'pdf_file', 'type': 'file', 'required': False},
+                        ]
+                    },
+                    {
+                        'method': 'POST',
+                        'path': '/forms/partner/',
+                        'description': 'Forum hamkoriga aylaning arizasi',
+                        'params': [
+                            {'name': 'organization_name', 'type': 'string', 'required': True},
+                            {'name': 'contact_person', 'type': 'string', 'required': True},
+                            {'name': 'phone', 'type': 'string', 'required': True},
+                            {'name': 'email', 'type': 'string', 'required': True},
+                        ]
+                    },
+                    {
+                        'method': 'POST',
+                        'path': '/forms/certificate-check/',
+                        'description': 'Sertifikatni tekshirish',
+                        'params': [
+                            {'name': 'full_name', 'type': 'string', 'required': True},
+                            {'name': 'certificate_number', 'type': 'string', 'required': True},
+                        ]
                     }
                 ]
             }
