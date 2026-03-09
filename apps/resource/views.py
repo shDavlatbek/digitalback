@@ -4,24 +4,22 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import F
 
-from apps.common.mixins import IsActiveFilterMixin, SchoolScopedMixin
+from apps.common.mixins import IsActiveFilterMixin
 from .models import ResourceVideo, ResourceFile
 from .serializers import ResourceVideoSerializer, ResourceFileSerializer
 
 
-class ResourceVideoListView(IsActiveFilterMixin, SchoolScopedMixin, generics.ListAPIView):
-    """List all resource videos for the current school"""
+class ResourceVideoListView(IsActiveFilterMixin, generics.ListAPIView):
+    """List all resource videos"""
     queryset = ResourceVideo.objects.all()
     serializer_class = ResourceVideoSerializer
-    school_field = "school"
 
 
-class ResourceVideoDetailView(IsActiveFilterMixin, SchoolScopedMixin, generics.RetrieveAPIView):
+class ResourceVideoDetailView(IsActiveFilterMixin, generics.RetrieveAPIView):
     """Get a specific resource video and increment view count"""
     queryset = ResourceVideo.objects.all()
     serializer_class = ResourceVideoSerializer
-    school_field = "school"
-    
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         # Increment view count
@@ -32,19 +30,17 @@ class ResourceVideoDetailView(IsActiveFilterMixin, SchoolScopedMixin, generics.R
         return Response(serializer.data)
 
 
-class ResourceFileListView(IsActiveFilterMixin, SchoolScopedMixin, generics.ListAPIView):
-    """List all resource files for the current school"""
+class ResourceFileListView(IsActiveFilterMixin, generics.ListAPIView):
+    """List all resource files"""
     queryset = ResourceFile.objects.all()
     serializer_class = ResourceFileSerializer
-    school_field = "school"
 
 
-class ResourceFileDetailView(IsActiveFilterMixin, SchoolScopedMixin, generics.RetrieveAPIView):
+class ResourceFileDetailView(IsActiveFilterMixin, generics.RetrieveAPIView):
     """Get a specific resource file and increment download count"""
     queryset = ResourceFile.objects.all()
     serializer_class = ResourceFileSerializer
-    school_field = "school"
-    
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         # Increment download count

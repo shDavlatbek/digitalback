@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView
-from apps.common.mixins import IsActiveFilterMixin, SchoolScopedMixin
+from apps.common.mixins import IsActiveFilterMixin
 from ..models import Document, DocumentCategory
 from ..serializers.document import DocumentSerializer, DocumentCategorySerializer
 
@@ -10,7 +10,7 @@ class DocumentCategoryListView(IsActiveFilterMixin, ListAPIView):
     pagination_class = None
 
 
-class DocumentListView(IsActiveFilterMixin, SchoolScopedMixin, ListAPIView):
+class DocumentListView(IsActiveFilterMixin, ListAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     pagination_class = None

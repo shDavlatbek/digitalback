@@ -1,41 +1,28 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
-from apps.common.mixins import SchoolAdminMixin, AdminTranslation
+from apps.common.mixins import AdminTranslation
 from .models import ResourceVideo, ResourceFile
 
 
 @admin.register(ResourceVideo)
-class ResourceVideoAdmin(SchoolAdminMixin, AdminTranslation):
-    """Admin interface for Resource Videos with school scoping and translation support"""
-    
+class ResourceVideoAdmin(AdminTranslation):
+    """Admin interface for Resource Videos with translation support"""
+
     list_display = ('title', 'youtube_thumbnail', 'view_count', 'is_active', 'created_at')
     list_display_links = ('title',)
     list_filter = ('is_active', 'created_at')
     search_fields = ('title',)
     ordering = ('-created_at',)
     readonly_fields = ('view_count', 'video_preview')
-    
-    def has_module_permission(self, request):
-        return not request.user.is_superuser
-    
-    # fieldsets = (
-    #     ('Asosiy ma\'lumotlar 📌', {
-    #         'fields': ('title', 'is_active')
-    #     }),
-    #     ('Video 🎥', {
-    #         'fields': ('youtube_link', 'view_count', 'video_preview')
-    #     }),
-    # )
-    
+
     def youtube_thumbnail(self, obj):
         """Display YouTube video thumbnail"""
         if obj.youtube_link:
             try:
-                # Extract video ID from YouTube URL
                 import re
                 from urllib.parse import urlparse, parse_qs
-                
+
                 parsed_url = urlparse(obj.youtube_link)
                 if 'youtube.com' in parsed_url.netloc:
                     video_id = parse_qs(parsed_url.query).get('v', [None])[0]
@@ -43,7 +30,7 @@ class ResourceVideoAdmin(SchoolAdminMixin, AdminTranslation):
                     video_id = parsed_url.path[1:]
                 else:
                     return "Noto'g'ri URL"
-                
+
                 if video_id:
                     thumbnail_url = f"https://img.youtube.com/vi/{video_id}/mqdefault.jpg"
                     return format_html(
@@ -54,15 +41,14 @@ class ResourceVideoAdmin(SchoolAdminMixin, AdminTranslation):
                 pass
         return ""
     youtube_thumbnail.short_description = ""
-    
+
     def video_preview(self, obj):
         """Embed YouTube video preview"""
         if obj.youtube_link:
             try:
-                # Extract video ID
                 import re
                 from urllib.parse import urlparse, parse_qs
-                
+
                 parsed_url = urlparse(obj.youtube_link)
                 if 'youtube.com' in parsed_url.netloc:
                     video_id = parse_qs(parsed_url.query).get('v', [None])[0]
@@ -70,7 +56,7 @@ class ResourceVideoAdmin(SchoolAdminMixin, AdminTranslation):
                     video_id = parsed_url.path[1:]
                 else:
                     return "Noto'g'ri YouTube havola"
-                
+
                 if video_id:
                     return format_html(
                         '<iframe width="320" height="180" src="https://www.youtube.com/embed/{}" '
@@ -84,16 +70,16 @@ class ResourceVideoAdmin(SchoolAdminMixin, AdminTranslation):
 
 
 @admin.register(ResourceFile)
-class ResourceFileAdmin(SchoolAdminMixin, AdminTranslation):
-    """Admin interface for Resource Files with school scoping and translation support"""
-    
+class ResourceFileAdmin(AdminTranslation):
+    """Admin interface for Resource Files with translation support"""
+
     list_display = ('title', 'file_info', 'download_count', 'is_active', 'created_at')
     list_display_links = ('title',)
     list_filter = ('is_active', 'created_at')
     search_fields = ('title',)
     ordering = ('-created_at',)
     readonly_fields = ('download_count', 'file_preview')
-    
+
     def file_info(self, obj):
         """Display file information"""
         if obj.file:
@@ -105,9 +91,9 @@ class ResourceFileAdmin(SchoolAdminMixin, AdminTranslation):
                     size_str = f"{file_size / 1024:.1f} KB"
                 else:
                     size_str = f"{file_size / (1024 * 1024):.1f} MB"
-                
+
                 file_ext = obj.file.name.split('.')[-1].upper() if '.' in obj.file.name else 'FILE'
-                
+
                 return format_html(
                     '<span style="background: #007cba; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">{}</span> '
                     '<span style="color: #666;">{}</span>',
@@ -117,7 +103,7 @@ class ResourceFileAdmin(SchoolAdminMixin, AdminTranslation):
                 return "Fayl ma'lumoti mavjud emas"
         return ""
     file_info.short_description = "Fayl ma'lumoti"
-    
+
     def file_preview(self, obj):
         """Show file download link"""
         if obj.file:
@@ -128,6 +114,3 @@ class ResourceFileAdmin(SchoolAdminMixin, AdminTranslation):
             )
         return ""
     file_preview.short_description = ""
-    
-    def has_module_permission(self, request):
-        return not request.user.is_superuser

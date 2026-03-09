@@ -1,11 +1,10 @@
 from rest_framework.generics import ListAPIView
-from apps.common.mixins import IsActiveFilterMixin, SchoolScopedMixin
+from apps.common.mixins import IsActiveFilterMixin
 from ..models import EduInfo
 from ..serializers.edu_info import EduInfoSerializer
 
 
-class EduInfoListView(IsActiveFilterMixin, SchoolScopedMixin, ListAPIView):
+class EduInfoListView(IsActiveFilterMixin, ListAPIView):
     queryset = EduInfo.objects.all()
     serializer_class = EduInfoSerializer
-    school_field = "school"
-    pagination_class = None 
+    pagination_class = None

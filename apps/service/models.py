@@ -1,7 +1,6 @@
 from django.db import models
 from apps.common.mixins import SlugifyMixin
 from apps.common.models import BaseModel
-from apps.main.models import School
 from apps.common.utils import generate_upload_path
 from apps.common.validators import file_size
 from tinymce.models import HTMLField
@@ -9,12 +8,6 @@ from tinymce.models import HTMLField
 
 
 class Service(SlugifyMixin, BaseModel):
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Maktab",
-        related_name="services",
-    )
     name = models.CharField(max_length=255, verbose_name="Nomi")
     slug = models.SlugField(max_length=255, verbose_name="Slug")
     description = HTMLField(verbose_name="Tavsifi")
@@ -30,8 +23,8 @@ class Service(SlugifyMixin, BaseModel):
         verbose_name_plural = "Xizmatlar"
         constraints = [
             models.UniqueConstraint(
-                fields=['school', 'slug'],
-                name='unique_service_school_slug',
+                fields=['slug'],
+                name='unique_service_slug',
             )
         ]
 
@@ -59,7 +52,7 @@ class CultureServiceFile(BaseModel):
     )
     def __str__(self):
         return f"{self.service.name} - {self.created_at}"
-    
+
     class Meta:
         verbose_name = "Xizmat fayli"
         verbose_name_plural = "Xizmat fayllari"
@@ -79,7 +72,7 @@ class Art(Service):
     author_musical_instrument = models.CharField(max_length=255, verbose_name="Muallif musiqaviy instrumenti", null=True, blank=True)
     author_direction = models.CharField(max_length=255, verbose_name="Muallif yo'nalishi", null=True, blank=True)
     author_honor = models.CharField(max_length=255, verbose_name="Muallif yutuqlari", null=True, blank=True)
-    
+
     class Meta:
         abstract = True
 
@@ -112,7 +105,7 @@ class ServiceImage(BaseModel):
 
     def __str__(self):
         return f"{self.service.name} - {self.created_at}"
-    
+
     class Meta:
         verbose_name = "Xizmat rasmi"
         verbose_name_plural = "Xizmat rasmlari"

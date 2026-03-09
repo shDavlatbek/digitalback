@@ -220,7 +220,6 @@ AUTH_GROUP_MODEL = 'auth.Group'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# NOT_ALLOWED_SUBDOMAINS = ['www', '', 'cdn', 'api', 'admin']
 
 
 #######################################################

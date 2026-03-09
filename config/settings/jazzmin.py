@@ -59,7 +59,7 @@ JAZZMIN_SETTINGS: dict = {
 
     'order_with_respect_to': [
         'auth', 'user', 
-        'main', 'main.school', 'main.menu', 'main.banner', 'main.schoollife', 
+        'main', 'main.menu', 'main.banner', 'main.schoollife',
         'main.directionschool', 'main.subject', 'main.musicalinstrument', 'main.direction', 'main.teacher',
         'main.faq', 'main.vacancy', 'main.staff', 'main.leader', 'main.timetable', 'main.documentcategory', 'main.document', 'main.honors', 'main.honorachievements', 'main.contactform', 'main.comment',
         'news', 'news.category', 'news.news',
@@ -88,7 +88,6 @@ JAZZMIN_SETTINGS: dict = {
         'user.user': 'fas fa-user-tie',
         
         # Main app models
-        'main.school': 'fas fa-school',
         'main.schoollife': 'fas fa-images',
         'main.menu': 'fas fa-bars',
         'main.banner': 'fas fa-image',

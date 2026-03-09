@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Prefetch
 
-from apps.common.mixins import IsActiveFilterMixin, SchoolScopedMixin
+from apps.common.mixins import IsActiveFilterMixin
 from .models import MediaCollection, MediaImage, MediaVideo
 from .serializers import MediaCollectionListSerializer, MediaCollectionDetailSerializer, MediaVideoSerializer, MediaImageSerializer
 
 
-class MediaCollectionListView(IsActiveFilterMixin, SchoolScopedMixin, generics.ListAPIView):
+class MediaCollectionListView(IsActiveFilterMixin, generics.ListAPIView):
     queryset = MediaCollection.objects.all().prefetch_related(
         Prefetch(
             'media_images',
@@ -18,22 +18,19 @@ class MediaCollectionListView(IsActiveFilterMixin, SchoolScopedMixin, generics.L
         )
     )
     serializer_class = MediaCollectionListSerializer
-    school_field = "school"
 
 
-class MediaCollectionDetailView(IsActiveFilterMixin, SchoolScopedMixin, generics.RetrieveAPIView):
+class MediaCollectionDetailView(IsActiveFilterMixin, generics.RetrieveAPIView):
     queryset = MediaCollection.objects.all().prefetch_related(
         'media_images__collection'
     )
     serializer_class = MediaCollectionDetailSerializer
     lookup_field = 'slug'
-    school_field = "school"
 
 
-class MediaImageListView(IsActiveFilterMixin, SchoolScopedMixin, generics.ListAPIView):
+class MediaImageListView(IsActiveFilterMixin, generics.ListAPIView):
     queryset = MediaImage.objects.filter(show_in_main=True).select_related('collection')
     serializer_class = MediaImageSerializer
-    school_field = "collection__school"
 
 
 class MediaVideoListView(IsActiveFilterMixin, generics.ListAPIView):

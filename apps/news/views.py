@@ -6,7 +6,7 @@ from rest_framework.compat import coreapi, coreschema
 from django.utils.encoding import force_str
 import warnings
 from django.utils.safestring import mark_safe
-from apps.common.mixins import IsActiveFilterMixin, SchoolScopedMixin
+from apps.common.mixins import IsActiveFilterMixin
 from apps.news.models import News, Category
 from apps.news.serializers.news import NewsListSerializer, NewsDetailSerializer, CategorySerializer
 
@@ -16,14 +16,14 @@ class CategorySlugFilterBackend(BaseFilterBackend):
     Custom filter backend that allows filtering news by category slug.
     Usage: ?category_slug=science-news
     """
-    
-    
+
+
     def filter_queryset(self, request, queryset, view):
         category_slug = request.query_params.get('category_slug')
         if category_slug:
             return queryset.filter(category__slug=category_slug)
         return queryset
-    
+
     def to_html(self, request, queryset, view):
         """
         Render the filter for the browsable API.
@@ -33,9 +33,9 @@ class CategorySlugFilterBackend(BaseFilterBackend):
             f'<option value="{cat["slug"]}">{cat["name"]}</option>'
             for cat in categories
         ])
-        
+
         current_value = request.query_params.get('category_slug', '')
-        
+
         return mark_safe(f'''
         <div class="form-group">
             <label for="category_slug">Category:</label>
@@ -77,11 +77,11 @@ class CategorySlugFilterBackend(BaseFilterBackend):
                 },
             },
         ]
-        
 
-class CategoryListView(IsActiveFilterMixin, SchoolScopedMixin, ListAPIView):
+
+class CategoryListView(IsActiveFilterMixin, ListAPIView):
     """List view for news categories"""
-    
+
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     permission_classes = []
@@ -92,9 +92,9 @@ class CategoryListView(IsActiveFilterMixin, SchoolScopedMixin, ListAPIView):
     ordering = ['name']
 
 
-class NewsListView(IsActiveFilterMixin, SchoolScopedMixin, ListAPIView):
+class NewsListView(IsActiveFilterMixin, ListAPIView):
     """List view for news with filtering and search"""
-    
+
     serializer_class = NewsListSerializer
     queryset = News.objects.all()
     permission_classes = []
@@ -102,16 +102,16 @@ class NewsListView(IsActiveFilterMixin, SchoolScopedMixin, ListAPIView):
         DjangoFilterBackend,
         CategorySlugFilterBackend
     ]
-    
 
-class NewsDetailView(IsActiveFilterMixin, SchoolScopedMixin, RetrieveAPIView):
+
+class NewsDetailView(IsActiveFilterMixin, RetrieveAPIView):
     """Detail view for news with view count increment"""
-    
+
     serializer_class = NewsDetailSerializer
     queryset = News.objects.all()
     permission_classes = []
     lookup_field = 'slug'
-    
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         # Increment view count when news is viewed

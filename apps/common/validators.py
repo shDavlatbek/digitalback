@@ -2,7 +2,6 @@ import re
 import requests
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from config.settings.base import NOT_ALLOWED_SUBDOMAINS
 
 
 def file_size(value):
@@ -13,11 +12,7 @@ def file_size(value):
 def file_size_50(value):
     limit = 50 * 1024 * 1024
     if value.size > limit:
-        raise ValidationError('Fayl 50 MB dan katta bo\'lishi mumkin emas.') 
-
-def validate_subdomain(value):
-    if value in NOT_ALLOWED_SUBDOMAINS:
-        raise ValidationError("Bunaqa subdomain nomi qo'yish mumkin emas")
+        raise ValidationError('Fayl 50 MB dan katta bo\'lishi mumkin emas.')
 
 def validate_youtube_link(value):
     """
@@ -30,7 +25,7 @@ def validate_youtube_link(value):
     """
     if not value:
         raise ValidationError("YouTube havolasi talab etiladi.")
-    
+
     # Regex pattern to match various YouTube URL formats
     youtube_regex = re.compile(
         r'^(?:https?://)?'  # Optional protocol
@@ -40,15 +35,15 @@ def validate_youtube_link(value):
         r'([\w\-]{11})'  # Video ID (11 characters)
         r'(?:\S+)?$'  # Optional additional parameters
     )
-    
+
     match = youtube_regex.match(value)
     if not match:
         raise ValidationError(
             "YouTube havolasi noto'g'ri formatda. Iltimos, to'g'ri YouTube havolasini kiriting."
         )
-    
+
     video_id = match.group(1)
-    
+
     # Additional validation: Check if video exists by testing thumbnail
     if not _youtube_video_exists(video_id):
         raise ValidationError(
@@ -65,7 +60,7 @@ def _youtube_video_exists(video_id):
         # Try to get the medium quality thumbnail
         thumbnail_url = f"https://img.youtube.com/vi/{video_id}/mqdefault.jpg"
         response = requests.head(thumbnail_url, timeout=5)
-        
+
         # If we get a 200 response, try to verify it's not the default thumbnail
         if response.status_code == 200:
             # Get the actual image to check dimensions
@@ -75,9 +70,9 @@ def _youtube_video_exists(video_id):
                 # Default thumbnails are typically smaller
                 content_length = len(img_response.content)
                 return content_length > 2000  # Arbitrary threshold
-        
+
         return False
-        
+
     except (requests.RequestException, Exception):
         # If we can't verify, assume it's valid to avoid false negatives
         # due to network issues
