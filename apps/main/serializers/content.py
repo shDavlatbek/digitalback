@@ -29,7 +29,7 @@ class FAQSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'image', 'full_name', 'job', 'comment', 'created_at']
+        fields = ['id', 'image', 'full_name', 'profession', 'comment', 'created_at']
 
 
 class PastForumSerializer(serializers.ModelSerializer):

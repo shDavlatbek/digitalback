@@ -17,31 +17,40 @@ class MainSettings(BaseModel):
         upload_to=generate_upload_path,
         verbose_name="Logo",
         validators=[file_size],
-        null=True, blank=True,
         help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
     )
     title = models.CharField(max_length=500, verbose_name="Sarlavha")
-    desc = models.TextField(verbose_name="Tavsif", null=True, blank=True)
-    timer = models.DateTimeField(verbose_name="Taymer (sanashga qarab)", null=True, blank=True)
+    short_description = models.CharField(max_length=500, verbose_name="Qisqa Tavsif", null=True, blank=True)
+    menu_timer = models.DateTimeField(verbose_name="Bosh menyu Timer", null=True, blank=True)
 
     # Section description texts
-    asosiy_qatnashchilar = models.CharField(
-        max_length=500, verbose_name="Asosiy qatnashchilar",
+    main_participants = models.SmallIntegerField(
+        verbose_name="Asosiy qatnashchilar",
         null=True, blank=True
     )
-    top_menejerlar = models.CharField(
-        max_length=500, verbose_name="Top menejerlar",
+    top_managers = models.SmallIntegerField(
+        verbose_name="Top menejerlar",
         null=True, blank=True
     )
-    bolim_shaxslari = models.CharField(
-        max_length=500, verbose_name="Bo'lim shaxslari",
+    department_personnel = models.SmallIntegerField(
+        verbose_name="Bo'lim shaxslari",
         null=True, blank=True
     )
-    homiylar_va_hamkorlar = models.CharField(
-        max_length=500, verbose_name="Homiylar va hamkorlar",
+    sponsors_and_partners = models.SmallIntegerField(
+        verbose_name="Homiylar va hamkorlar",
         null=True, blank=True
     )
     location = models.CharField(max_length=500, verbose_name="Joylashuv", null=True, blank=True)
+
+    facebook = models.URLField(verbose_name="Facebook", null=True, blank=True)
+    instagram = models.URLField(verbose_name="Instagram", null=True, blank=True)
+    youtube = models.URLField(verbose_name="YouTube", null=True, blank=True)
+    x = models.URLField(verbose_name="X (Twitter)", null=True, blank=True)
+    quote = models.TextField(verbose_name="Iqtibos", null=True, blank=True)
+
+    phone_number = models.CharField(max_length=255, verbose_name="Telefon raqami")
+    email = models.EmailField(verbose_name="Email")
+    address = models.CharField(max_length=500, verbose_name="Manzil")
 
     def __str__(self):
         return "Asosiy sozlamalar"
@@ -51,34 +60,6 @@ class MainSettings(BaseModel):
         verbose_name_plural = "Asosiy sozlamalar"
 
 
-class Footer(BaseModel):
-    facebook = models.URLField(verbose_name="Facebook", null=True, blank=True)
-    instagram = models.URLField(verbose_name="Instagram", null=True, blank=True)
-    youtube = models.URLField(verbose_name="YouTube", null=True, blank=True)
-    x = models.URLField(verbose_name="X (Twitter)", null=True, blank=True)
-    quote = models.TextField(verbose_name="Iqtibos", null=True, blank=True)
-
-    def __str__(self):
-        return "Footer"
-
-    class Meta:
-        verbose_name = "Footer"
-        verbose_name_plural = "Footer"
-
-
-class Contact(BaseModel):
-    tel_phone = models.CharField(max_length=255, verbose_name="Telefon raqami")
-    email = models.EmailField(verbose_name="Email")
-    address = models.CharField(max_length=500, verbose_name="Manzil")
-
-    def __str__(self):
-        return "Aloqa ma'lumotlari"
-
-    class Meta:
-        verbose_name = "Aloqa"
-        verbose_name_plural = "Aloqa"
-
-
 # =============================================
 # WEB SECTION - Content
 # =============================================
@@ -86,18 +67,18 @@ class Contact(BaseModel):
 class Event(SlugifyMixin, BaseModel):
     title = models.CharField(max_length=500, verbose_name="Sarlavha")
     slug = models.SlugField(max_length=500, verbose_name="Slug")
-    address = models.CharField(max_length=500, verbose_name="Manzil", null=True, blank=True)
+    address = models.CharField(max_length=500, verbose_name="Manzil")
     start_date = models.DateTimeField(verbose_name="Boshlanish sanasi")
     end_date = models.DateTimeField(verbose_name="Tugash sanasi", null=True, blank=True)
-    content = HTMLField(verbose_name="Tafsilot", null=True, blank=True)
-    short_desc = models.TextField(verbose_name="Qisqa tavsif", null=True, blank=True)
-    location = models.CharField(max_length=500, verbose_name="Joylashuv", null=True, blank=True)
+    content = HTMLField(verbose_name="Tafsilot")
+    short_description = models.TextField(verbose_name="Qisqa tavsif", null=True, blank=True)
+    location = models.CharField(max_length=500, verbose_name="Joylashuv")
     image = models.ImageField(
         upload_to=generate_upload_path,
         verbose_name="Rasm",
-        validators=[file_size],
+        validators=[file_size_50],
         null=True, blank=True,
-        help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
+        help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
 
     def image_tag(self):
@@ -129,7 +110,7 @@ class EventSchedule(BaseModel):
     date = models.DateField(verbose_name="Sana")
     name = models.CharField(max_length=500, verbose_name="Nomi")
     start_time = models.TimeField(verbose_name="Boshlanish vaqti")
-    end_time = models.TimeField(verbose_name="Tugash vaqti", null=True, blank=True)
+    end_time = models.TimeField(verbose_name="Tugash vaqti")
 
     def __str__(self):
         return f"{self.event.title} - {self.name}"
@@ -147,7 +128,7 @@ class Speaker(BaseModel):
         verbose_name="Tadbir",
         related_name="speakers",
     )
-    job = models.CharField(max_length=500, verbose_name="Lavozimi", null=True, blank=True)
+    profession = models.CharField(max_length=500, verbose_name="Lavozimi", null=True, blank=True)
     content = HTMLField(verbose_name="Tafsilot", null=True, blank=True)
     image = models.ImageField(
         upload_to=generate_upload_path,
@@ -259,8 +240,8 @@ class Sponsor(BaseModel):
     logo = models.ImageField(
         upload_to=generate_upload_path,
         verbose_name="Logo",
-        validators=[file_size],
-        help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
+        validators=[file_size_50],
+        help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
     company_name = models.CharField(max_length=500, verbose_name="Kompaniya nomi")
 
@@ -279,7 +260,7 @@ class Sponsor(BaseModel):
 
 class FAQ(BaseModel):
     question = models.CharField(max_length=500, verbose_name="Savol")
-    answer = models.TextField(verbose_name="Javob")
+    answer = HTMLField(verbose_name="Javob")
 
     def __str__(self):
         return self.question
@@ -293,13 +274,13 @@ class Comment(BaseModel):
     image = models.ImageField(
         upload_to=generate_upload_path,
         verbose_name="Rasm",
-        validators=[file_size],
+        validators=[file_size_50],
         null=True, blank=True,
-        help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
+        help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
     full_name = models.CharField(max_length=500, verbose_name="F.I.O")
-    job = models.CharField(max_length=500, verbose_name="Lavozimi", null=True, blank=True)
-    comment = models.TextField(verbose_name="Izoh")
+    profession = models.CharField(max_length=500, verbose_name="Lavozimi")
+    comment = HTMLField(verbose_name="Izoh")
 
     def image_tag(self):
         if self.image:
@@ -319,9 +300,9 @@ class PastForum(BaseModel):
     image = models.ImageField(
         upload_to=generate_upload_path,
         verbose_name="Rasm",
-        validators=[file_size],
+        validators=[file_size_50],
         null=True, blank=True,
-        help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
+        help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
     name = models.CharField(max_length=500, verbose_name="Nomi")
 
@@ -344,20 +325,18 @@ class PastForum(BaseModel):
 
 class PresentationSubmission(BaseModel):
     full_name = models.CharField(max_length=500, verbose_name="Ism va familiya")
-    position = models.CharField(max_length=500, verbose_name="Lavozim")
+    profession = models.CharField(max_length=500, verbose_name="Lavozim")
     organization_name = models.CharField(max_length=500, verbose_name="Tashkilot nomi")
     phone = models.CharField(max_length=255, verbose_name="Telefon raqami")
     email = models.EmailField(verbose_name="Email manzili")
     organization_website = models.URLField(
         verbose_name="Tashkilot sayti",
-        null=True, blank=True
     )
     presentation_topic = models.CharField(max_length=500, verbose_name="Taqdimot mavzusi")
     pdf_file = models.FileField(
         upload_to=generate_upload_path,
         verbose_name="PDF fayl",
         validators=[file_size_50, FileExtensionValidator(allowed_extensions=['pdf'])],
-        null=True, blank=True,
         help_text="Fayl 50 MB dan katta bo'lishi mumkin emas. PDF formatida bo'lishi kerak."
     )
 
@@ -385,7 +364,16 @@ class PartnerApplication(BaseModel):
         ordering = ['-created_at']
 
 
-class CertificateCheck(BaseModel):
+class Certificate(BaseModel):
+    file = models.FileField(
+        upload_to=generate_upload_path,
+        verbose_name="PDF fayl",
+        null=True, blank=True,
+        validators=[file_size_50, FileExtensionValidator(allowed_extensions=['pdf'])],
+        help_text="Fayl 50 MB dan katta bo'lishi mumkin emas. PDF formatida bo'lishi kerak."
+    )
+    
+    event_name = models.CharField(max_length=500, verbose_name="Tadbir nomi")
     full_name = models.CharField(max_length=500, verbose_name="Ism va familiya")
     certificate_number = models.CharField(max_length=255, verbose_name="Sertifikat raqami")
 

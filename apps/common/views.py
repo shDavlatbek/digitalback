@@ -69,19 +69,7 @@ class APIDocumentationView(TemplateView):
                     {
                         'method': 'GET',
                         'path': '/settings/',
-                        'description': 'Asosiy sozlamalar',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/footer/',
-                        'description': 'Footer ma\'lumotlari',
-                        'params': []
-                    },
-                    {
-                        'method': 'GET',
-                        'path': '/contact/',
-                        'description': 'Aloqa ma\'lumotlari',
+                        'description': 'Asosiy sozlamalar (logo, ijtimoiy tarmoqlar, aloqa, va h.k.)',
                         'params': []
                     }
                 ]
@@ -159,13 +147,13 @@ class APIDocumentationView(TemplateView):
                         'description': 'Taqdimot bilan chiqish arizasi',
                         'params': [
                             {'name': 'full_name', 'type': 'string', 'required': True},
-                            {'name': 'position', 'type': 'string', 'required': True},
+                            {'name': 'profession', 'type': 'string', 'required': True},
                             {'name': 'organization_name', 'type': 'string', 'required': True},
                             {'name': 'phone', 'type': 'string', 'required': True},
                             {'name': 'email', 'type': 'string', 'required': True},
-                            {'name': 'organization_website', 'type': 'string', 'required': False},
+                            {'name': 'organization_website', 'type': 'string', 'required': True},
                             {'name': 'presentation_topic', 'type': 'string', 'required': True},
-                            {'name': 'pdf_file', 'type': 'file', 'required': False},
+                            {'name': 'pdf_file', 'type': 'file', 'required': True},
                         ]
                     },
                     {

@@ -1,0 +1,118 @@
+{% load i18n %}
+<div class="leaflet-location-widget" id="map-wrapper-{{ widget.name }}" style="margin-bottom: 10px">
+  <div id="map-{{ widget.name }}" style="height: {{ widget.map_height }}; border-radius: 8px; border: 1px solid #ccc;"></div>
+  <div class="leaflet-location-controls">
+    <div class="leaflet-location-coords">
+      <label>Lat:</label>
+      <input type="text" id="lat-{{ widget.name }}" class="leaflet-coord-input" placeholder="Latitude" readonly />
+      <label>Lng:</label>
+      <input type="text" id="lng-{{ widget.name }}" class="leaflet-coord-input" placeholder="Longitude" readonly />
+    </div>
+    <button type="button" class="leaflet-clear-btn" id="clear-{{ widget.name }}">Tozalash</button>
+  </div>
+  <input
+    type="{{ widget.type }}"
+    name="{{ widget.name }}"
+    id="{{ widget.attrs.id }}"
+    value="{{ widget.value|default_if_none:'' }}"
+    class="leaflet-hidden-input"
+    {% for attr_name, attr_val in widget.attrs.items %}
+    {% if attr_name != "id" %}{{ attr_name }}="{{ attr_val }}" {% endif %}
+    {% endfor %} />
+</div>
+
+<script>
+  (function() {
+      function initMap() {
+          var inputId = '{{ widget.attrs.id }}';
+          var mapId = 'map-{{ widget.name }}';
+          var latId = 'lat-{{ widget.name }}';
+          var lngId = 'lng-{{ widget.name }}';
+          var clearId = 'clear-{{ widget.name }}';
+          var defaultCenter = [{{ widget.default_center.0 }}, {{ widget.default_center.1 }}];
+          var defaultZoom = {{ widget.default_zoom }};
+
+          var input = document.getElementById(inputId);
+          var latInput = document.getElementById(latId);
+          var lngInput = document.getElementById(lngId);
+          var clearBtn = document.getElementById(clearId);
+
+          var map = L.map(mapId).setView(defaultCenter, defaultZoom);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; OpenStreetMap contributors',
+              maxZoom: 19,
+          }).addTo(map);
+
+          var marker = null;
+
+          function setMarker(lat, lng) {
+              if (marker) {
+                  marker.setLatLng([lat, lng]);
+              } else {
+                  marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                  marker.on('dragend', function(e) {
+                      var pos = e.target.getLatLng();
+                      updateValue(pos.lat, pos.lng);
+                  });
+              }
+              updateValue(lat, lng);
+          }
+
+          function updateValue(lat, lng) {
+              var latFixed = parseFloat(lat).toFixed(6);
+              var lngFixed = parseFloat(lng).toFixed(6);
+              input.value = latFixed + ',' + lngFixed;
+              latInput.value = latFixed;
+              lngInput.value = lngFixed;
+          }
+
+          function clearMarker() {
+              if (marker) {
+                  map.removeLayer(marker);
+                  marker = null;
+              }
+              input.value = '';
+              latInput.value = '';
+              lngInput.value = '';
+          }
+
+          // Parse initial value
+          var initialValue = input.value.trim();
+          if (initialValue && initialValue.indexOf(',') !== -1) {
+              var parts = initialValue.split(',');
+              var lat = parseFloat(parts[0]);
+              var lng = parseFloat(parts[1]);
+              if (!isNaN(lat) && !isNaN(lng)) {
+                  setMarker(lat, lng);
+                  map.setView([lat, lng], 15);
+              }
+          }
+
+          // Click on map
+          map.on('click', function(e) {
+              setMarker(e.latlng.lat, e.latlng.lng);
+          });
+
+          // Clear button
+          clearBtn.addEventListener('click', clearMarker);
+
+          // Fix map display when in tabbed admin
+          setTimeout(function() { map.invalidateSize(); }, 300);
+
+          // Also invalidate on tab click (for translation tabs)
+          document.querySelectorAll('.ui-tabs-anchor, .tab-button, [data-toggle="tab"]').forEach(function(tab) {
+              tab.addEventListener('click', function() {
+                  setTimeout(function() { map.invalidateSize(); }, 200);
+              });
+          });
+      }
+
+      if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+              setTimeout(initMap, 100);
+          });
+      } else {
+          setTimeout(initMap, 100);
+      }
+  })();
+</script>

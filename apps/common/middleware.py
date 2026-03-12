@@ -11,10 +11,10 @@ class ActiveRecordMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         # Monkey patch QuerySet to automatically filter out inactive records
-        self._original_queryset_init = QuerySet.__init__
+        original_init = QuerySet.__init__
         
         def _patched_queryset_init(self, *args, **kwargs):
-            self._original_queryset_init(*args, **kwargs)
+            original_init(self, *args, **kwargs)
             # Only apply to models with an is_active field
             model = self.model
             if hasattr(model, 'is_active'):

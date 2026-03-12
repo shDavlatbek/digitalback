@@ -1,29 +1,18 @@
 from modeltranslation.translator import translator, TranslationOptions
 from .models import (
-    MainSettings, Footer, Contact,
+    MainSettings,
     Event, EventSchedule, Speaker, EventMedia, News,
     Supporter, Sponsor, FAQ, Comment, PastForum,
 )
 
 
 class MainSettingsTranslationOptions(TranslationOptions):
-    fields = ('title', 'desc', 'asosiy_qatnashchilar', 'top_menejerlar',
-              'bolim_shaxslari', 'homiylar_va_hamkorlar', 'location')
-    required_languages = ('uz',)
-
-
-class FooterTranslationOptions(TranslationOptions):
-    fields = ('quote',)
-    required_languages = ('uz',)
-
-
-class ContactTranslationOptions(TranslationOptions):
-    fields = ('address',)
+    fields = ('title', 'short_description', 'quote', 'address')
     required_languages = ('uz',)
 
 
 class EventTranslationOptions(TranslationOptions):
-    fields = ('title', 'address', 'content', 'short_desc', 'location')
+    fields = ('title', 'address', 'content', 'short_description')
     required_languages = ('uz',)
 
 
@@ -33,7 +22,7 @@ class EventScheduleTranslationOptions(TranslationOptions):
 
 
 class SpeakerTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'job', 'content')
+    fields = ('full_name', 'profession', 'content')
     required_languages = ('uz',)
 
 
@@ -63,7 +52,7 @@ class FAQTranslationOptions(TranslationOptions):
 
 
 class CommentTranslationOptions(TranslationOptions):
-    fields = ('full_name', 'job', 'comment')
+    fields = ('full_name', 'profession', 'comment')
     required_languages = ('uz',)
 
 
@@ -73,8 +62,6 @@ class PastForumTranslationOptions(TranslationOptions):
 
 
 translator.register(MainSettings, MainSettingsTranslationOptions)
-translator.register(Footer, FooterTranslationOptions)
-translator.register(Contact, ContactTranslationOptions)
 translator.register(Event, EventTranslationOptions)
 translator.register(EventSchedule, EventScheduleTranslationOptions)
 translator.register(Speaker, SpeakerTranslationOptions)

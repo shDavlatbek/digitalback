@@ -12,7 +12,7 @@ class EventScheduleSerializer(serializers.ModelSerializer):
 class SpeakerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Speaker
-        fields = ['id', 'full_name', 'job', 'content', 'image']
+        fields = ['id', 'full_name', 'profession', 'content', 'image']
 
 
 class EventMediaSerializer(serializers.ModelSerializer):
@@ -24,18 +24,18 @@ class EventMediaSerializer(serializers.ModelSerializer):
 
 
 class EventListSerializer(serializers.ModelSerializer):
-    short_desc = serializers.SerializerMethodField()
+    short_description = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
             'id', 'title', 'slug', 'image', 'address',
-            'start_date', 'end_date', 'short_desc', 'location', 'created_at'
+            'start_date', 'end_date', 'short_description', 'location', 'created_at'
         ]
 
-    def get_short_desc(self, obj):
-        if obj.short_desc:
-            return obj.short_desc
+    def get_short_description(self, obj):
+        if obj.short_description:
+            return obj.short_description
         if obj.content:
             plain = strip_tags(obj.content)
             return plain[:200] + '...' if len(plain) > 200 else plain
@@ -51,6 +51,6 @@ class EventDetailSerializer(serializers.ModelSerializer):
         model = Event
         fields = [
             'id', 'title', 'slug', 'image', 'address',
-            'start_date', 'end_date', 'content', 'short_desc', 'location',
+            'start_date', 'end_date', 'content', 'short_description', 'location',
             'schedules', 'speakers', 'event_media', 'created_at'
         ]

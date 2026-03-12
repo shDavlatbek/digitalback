@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from ..models import PresentationSubmission, PartnerApplication, CertificateCheck
+from ..models import PresentationSubmission, PartnerApplication, Certificate
 
 
 class PresentationSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PresentationSubmission
         fields = [
-            'full_name', 'position', 'organization_name',
+            'full_name', 'profession', 'organization_name',
             'phone', 'email', 'organization_website',
             'presentation_topic', 'pdf_file'
         ]
@@ -18,7 +18,7 @@ class PartnerApplicationSerializer(serializers.ModelSerializer):
         fields = ['organization_name', 'contact_person', 'phone', 'email']
 
 
-class CertificateCheckSerializer(serializers.ModelSerializer):
+class CertificateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CertificateCheck
-        fields = ['full_name', 'certificate_number']
+        model = Certificate
+        fields = ['full_name', 'event_name', 'certificate_number']

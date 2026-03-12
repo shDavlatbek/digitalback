@@ -1,24 +1,14 @@
 from rest_framework import serializers
-from ..models import MainSettings, Footer, Contact
+from ..models import MainSettings
 
 
 class MainSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MainSettings
         fields = [
-            'id', 'logo', 'title', 'desc', 'timer',
-            'asosiy_qatnashchilar', 'top_menejerlar',
-            'bolim_shaxslari', 'homiylar_va_hamkorlar', 'location'
+            'id', 'logo', 'title', 'short_description', 'menu_timer',
+            'main_participants', 'top_managers',
+            'department_personnel', 'sponsors_and_partners', 'location',
+            'facebook', 'instagram', 'youtube', 'x', 'quote',
+            'phone_number', 'email', 'address',
         ]
-
-
-class FooterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Footer
-        fields = ['id', 'facebook', 'instagram', 'youtube', 'x', 'quote']
-
-
-class ContactSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contact
-        fields = ['id', 'tel_phone', 'email', 'address']

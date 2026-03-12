@@ -3,7 +3,9 @@ from apps.common.mixins import DescriptionMixin, AdminTranslation
 from modeltranslation.admin import TranslationTabularInline
 from modeltranslation import settings as mt_settings
 from django.utils.safestring import mark_safe
+from django import forms
 from . import models
+from apps.common.widgets import LeafletLocationWidget
 
 
 # =============================================
@@ -15,36 +17,48 @@ class MainSettingsAdmin(AdminTranslation):
     exclude = ('is_active',)
     list_display = ('__str__', 'created_at')
 
+    fieldsets = (
+        ('Asosiy', {
+            'fields': ('logo', 'title', 'short_description', 'menu_timer', 'location', 'quote')
+        }),
+        ('Raqamlar', {
+            'fields': ('main_participants', 'top_managers', 'department_personnel', 'sponsors_and_partners')
+        }),
+        ('Ijtimoiy tarmoqlar', {
+            'fields': ('facebook', 'instagram', 'youtube', 'x')
+        }),
+        ('Kontakt ma\'lumotlar', {
+            'fields': ('phone_number', 'email', 'address')
+        })
+    )
+
+    PLACEHOLDERS = {
+        'title': 'Forum sarlavhasini kiriting',
+        'short_description': 'Qisqa tavsif...',
+        'facebook': 'https://facebook.com/sahifa',
+        'instagram': 'https://instagram.com/username',
+        'youtube': 'https://youtube.com/@kanal',
+        'x': 'https://x.com/username',
+        'phone_number': '+998 90 123 45 67',
+        'email': 'info@example.com',
+        'address': 'Toshkent sh., ...',
+        'quote': 'Iqtibos matnini kiriting...',
+        'main_participants': '500',
+        'top_managers': '50',
+        'department_personnel': '100',
+        'sponsors_and_partners': '30',
+    }
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'location':
+            kwargs['widget'] = LeafletLocationWidget()
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if field and db_field.name in self.PLACEHOLDERS:
+            field.widget.attrs['placeholder'] = self.PLACEHOLDERS[db_field.name]
+        return field
+
     def has_add_permission(self, request):
         if models.MainSettings.objects.exists():
-            return False
-        return request.user.is_superuser
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-
-@admin.register(models.Footer)
-class FooterAdmin(AdminTranslation):
-    exclude = ('is_active',)
-    list_display = ('__str__', 'created_at')
-
-    def has_add_permission(self, request):
-        if models.Footer.objects.exists():
-            return False
-        return request.user.is_superuser
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-
-@admin.register(models.Contact)
-class ContactAdmin(AdminTranslation):
-    exclude = ('is_active',)
-    list_display = ('__str__', 'tel_phone', 'email', 'created_at')
-
-    def has_add_permission(self, request):
-        if models.Contact.objects.exists():
             return False
         return request.user.is_superuser
 
@@ -102,6 +116,20 @@ class EventAdmin(DescriptionMixin, AdminTranslation):
     prepopulated_fields = {'slug': ('title',)}
     inlines = [EventScheduleInline, SpeakerInline, EventMediaInline]
 
+    PLACEHOLDERS = {
+        'title': 'Tadbir sarlavhasini kiriting',
+        'address': 'Toshkent sh., Amir Temur ko\'chasi 1',
+        'short_description': 'Tadbir haqida qisqa ma\'lumot...',
+    }
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'location':
+            kwargs['widget'] = LeafletLocationWidget()
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if field and db_field.name in self.PLACEHOLDERS:
+            field.widget.attrs['placeholder'] = self.PLACEHOLDERS[db_field.name]
+        return field
+
 
 @admin.register(models.News)
 class NewsAdmin(DescriptionMixin, AdminTranslation):
@@ -136,7 +164,7 @@ class FAQAdmin(AdminTranslation):
 
 @admin.register(models.Comment)
 class CommentAdmin(AdminTranslation):
-    list_display = ('image_tag', 'full_name', 'job', 'is_active', 'created_at')
+    list_display = ('image_tag', 'full_name', 'profession', 'is_active', 'created_at')
     list_display_links = ('image_tag', 'full_name')
     list_filter = ('is_active', 'created_at')
     search_fields = ('full_name', 'comment')
@@ -160,7 +188,7 @@ class PresentationSubmissionAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'created_at')
     search_fields = ('full_name', 'organization_name', 'presentation_topic')
     readonly_fields = (
-        'full_name', 'position', 'organization_name', 'phone', 'email',
+        'full_name', 'profession', 'organization_name', 'phone', 'email',
         'organization_website', 'presentation_topic', 'pdf_file', 'created_at', 'updated_at'
     )
 
@@ -193,12 +221,12 @@ class PartnerApplicationAdmin(admin.ModelAdmin):
         return request.user.is_superuser
 
 
-@admin.register(models.CertificateCheck)
-class CertificateCheckAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'certificate_number', 'created_at')
+@admin.register(models.Certificate)
+class CertificateAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'event_name', 'certificate_number', 'created_at')
     list_filter = ('created_at',)
-    search_fields = ('full_name', 'certificate_number')
-    readonly_fields = ('full_name', 'certificate_number', 'created_at', 'updated_at')
+    search_fields = ('full_name', 'event_name', 'certificate_number')
+    readonly_fields = ('full_name', 'event_name', 'certificate_number', 'file', 'created_at', 'updated_at')
 
     def has_add_permission(self, request):
         return False

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views.settings import MainSettingsView, FooterView, ContactView
+from .views.settings import MainSettingsView
 from .views.event import EventListView, EventDetailView
 from .views.content import (
     NewsListView, SupporterListView, SponsorListView,
@@ -8,14 +8,12 @@ from .views.content import (
 from .views.forms import (
     PresentationSubmissionCreateView,
     PartnerApplicationCreateView,
-    CertificateCheckCreateView,
+    CertificateCreateView,
 )
 
 urlpatterns = [
     # Settings endpoints (singletons)
     path('settings/', MainSettingsView.as_view(), name='main-settings'),
-    path('footer/', FooterView.as_view(), name='footer'),
-    path('contact/', ContactView.as_view(), name='contact'),
 
     # Event endpoints
     path('events/', EventListView.as_view(), name='event-list'),
@@ -32,5 +30,5 @@ urlpatterns = [
     # Form submission endpoints
     path('forms/presentation/', PresentationSubmissionCreateView.as_view(), name='presentation-submit'),
     path('forms/partner/', PartnerApplicationCreateView.as_view(), name='partner-apply'),
-    path('forms/certificate-check/', CertificateCheckCreateView.as_view(), name='certificate-check'),
+    path('forms/certificate-check/', CertificateCreateView.as_view(), name='certificate-check'),
 ]
