@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from apps.common.mixins import IsActiveFilterMixin
 from ..models import News, Supporter, Sponsor, FAQ, Comment, PastForum
 from ..serializers.content import (
@@ -10,6 +10,12 @@ from ..serializers.content import (
 class NewsListView(IsActiveFilterMixin, ListAPIView):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
+
+
+class NewsDetailView(IsActiveFilterMixin, RetrieveAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    lookup_field = 'slug'
 
 
 class SupporterListView(IsActiveFilterMixin, ListAPIView):

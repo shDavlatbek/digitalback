@@ -1,11 +1,16 @@
+import threading
+
 from django.db.models.query import QuerySet
 from django.db import models
+
+_active_filter_state = threading.local()
 
 
 class ActiveRecordMiddleware:
     """
     Middleware to automatically filter out inactive records from QuerySets.
     This should be added to settings.MIDDLEWARE after the standard Django middleware.
+    Skips filtering for admin pages so that inactive records are visible in the admin.
     """
     
     def __init__(self, get_response):
@@ -15,6 +20,9 @@ class ActiveRecordMiddleware:
         
         def _patched_queryset_init(self, *args, **kwargs):
             original_init(self, *args, **kwargs)
+            # Skip filtering if we're in an admin request
+            if getattr(_active_filter_state, 'skip_filter', False):
+                return
             # Only apply to models with an is_active field
             model = self.model
             if hasattr(model, 'is_active'):
@@ -31,5 +39,10 @@ class ActiveRecordMiddleware:
         QuerySet.__init__ = _patched_queryset_init
         
     def __call__(self, request):
-        response = self.get_response(request)
-        return response 
+        # Disable automatic is_active filtering for admin pages
+        _active_filter_state.skip_filter = request.path.startswith('/admin/')
+        try:
+            response = self.get_response(request)
+        finally:
+            _active_filter_state.skip_filter = False
+        return response

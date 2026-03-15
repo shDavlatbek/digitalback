@@ -1,6 +1,9 @@
 from django.db import models
+from django.utils.text import slugify
+from django.utils.html import strip_tags 
 from apps.common.mixins import SlugifyMixin
 from tinymce.models import HTMLField
+from apps.common.fields import MiniHTMLField
 from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
 from apps.common.models import BaseModel
@@ -19,8 +22,8 @@ class MainSettings(BaseModel):
         validators=[file_size],
         help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
     )
-    title = models.CharField(max_length=500, verbose_name="Sarlavha")
-    short_description = models.CharField(max_length=500, verbose_name="Qisqa Tavsif", null=True, blank=True)
+    title = MiniHTMLField(verbose_name="Sarlavha")
+    short_description = MiniHTMLField(verbose_name="Qisqa Tavsif", null=True, blank=True)
     menu_timer = models.DateTimeField(verbose_name="Bosh menyu Timer", null=True, blank=True)
 
     # Section description texts
@@ -65,14 +68,6 @@ class MainSettings(BaseModel):
 # =============================================
 
 class Event(SlugifyMixin, BaseModel):
-    title = models.CharField(max_length=500, verbose_name="Sarlavha")
-    slug = models.SlugField(max_length=500, verbose_name="Slug")
-    address = models.CharField(max_length=500, verbose_name="Manzil")
-    start_date = models.DateTimeField(verbose_name="Boshlanish sanasi")
-    end_date = models.DateTimeField(verbose_name="Tugash sanasi", null=True, blank=True)
-    content = HTMLField(verbose_name="Tafsilot")
-    short_description = models.TextField(verbose_name="Qisqa tavsif", null=True, blank=True)
-    location = models.CharField(max_length=500, verbose_name="Joylashuv")
     image = models.ImageField(
         upload_to=generate_upload_path,
         verbose_name="Rasm",
@@ -80,6 +75,14 @@ class Event(SlugifyMixin, BaseModel):
         null=True, blank=True,
         help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
+    title = MiniHTMLField(verbose_name="Sarlavha")
+    slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
+    short_description = MiniHTMLField(verbose_name="Qisqa tavsif", null=True, blank=True)
+    address = models.CharField(max_length=500, verbose_name="Manzil")
+    start_date = models.DateTimeField(verbose_name="Boshlanish sanasi")
+    end_date = models.DateTimeField(verbose_name="Tugash sanasi", null=True, blank=True)
+    content = HTMLField(verbose_name="Tafsilot")
+    location = models.CharField(max_length=500, verbose_name="Joylashuv")
 
     def image_tag(self):
         if self.image:
@@ -88,6 +91,11 @@ class Event(SlugifyMixin, BaseModel):
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug: # Only slugify if the slug is not already set
+            self.slug = slugify(strip_tags(self.title))
+        super(Event, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Tadbir"
@@ -122,6 +130,13 @@ class EventSchedule(BaseModel):
 
 
 class Speaker(BaseModel):
+    image = models.ImageField(
+        upload_to=generate_upload_path,
+        verbose_name="Rasm",
+        validators=[file_size],
+        null=True, blank=True,
+        help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
+    )
     full_name = models.CharField(max_length=500, verbose_name="F.I.O")
     event = models.ForeignKey(
         Event, on_delete=models.CASCADE,
@@ -130,13 +145,6 @@ class Speaker(BaseModel):
     )
     profession = models.CharField(max_length=500, verbose_name="Lavozimi", null=True, blank=True)
     content = HTMLField(verbose_name="Tafsilot", null=True, blank=True)
-    image = models.ImageField(
-        upload_to=generate_upload_path,
-        verbose_name="Rasm",
-        validators=[file_size],
-        null=True, blank=True,
-        help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
-    )
 
     def image_tag(self):
         if self.image:
@@ -190,7 +198,6 @@ class EventMedia(BaseModel):
 
 
 class News(BaseModel):
-    title = models.CharField(max_length=500, verbose_name="Sarlavha")
     image = models.ImageField(
         upload_to=generate_upload_path,
         verbose_name="Rasm",
@@ -198,6 +205,8 @@ class News(BaseModel):
         null=True, blank=True,
         help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
     )
+    title = MiniHTMLField(verbose_name="Sarlavha")
+    slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
     content = HTMLField(verbose_name="Tafsilot")
 
     def image_tag(self):
@@ -205,6 +214,11 @@ class News(BaseModel):
             return mark_safe(f'<img src="{self.image.url}" style="height: 50px; object-fit: cover;" />')
         return ""
 
+    def save(self, *args, **kwargs):
+        if not self.slug: # Only slugify if the slug is not already set
+            self.slug = slugify(strip_tags(self.title))
+        super(News, self).save(*args, **kwargs)
+    
     def __str__(self):
         return self.title
 

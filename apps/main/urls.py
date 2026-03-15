@@ -2,7 +2,7 @@ from django.urls import path
 from .views.settings import MainSettingsView
 from .views.event import EventListView, EventDetailView
 from .views.content import (
-    NewsListView, SupporterListView, SponsorListView,
+    NewsListView, NewsDetailView, SupporterListView, SponsorListView,
     FAQListView, CommentListView, PastForumListView,
 )
 from .views.forms import (
@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Content endpoints
     path('news/', NewsListView.as_view(), name='news-list'),
+    path('news/<slug:slug>/', NewsDetailView.as_view(), name='news-detail'),
     path('supporters/', SupporterListView.as_view(), name='supporter-list'),
     path('sponsors/', SponsorListView.as_view(), name='sponsor-list'),
     path('faqs/', FAQListView.as_view(), name='faq-list'),

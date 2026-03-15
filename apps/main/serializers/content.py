@@ -5,7 +5,7 @@ from ..models import News, Supporter, Sponsor, FAQ, Comment, PastForum
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
-        fields = ['id', 'title', 'image', 'content', 'created_at']
+        fields = ['id', 'title', 'slug', 'image', 'content', 'created_at']
 
 
 class SupporterSerializer(serializers.ModelSerializer):

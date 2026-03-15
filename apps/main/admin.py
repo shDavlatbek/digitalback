@@ -33,7 +33,7 @@ class MainSettingsAdmin(AdminTranslation):
     )
 
     PLACEHOLDERS = {
-        'title': 'Forum sarlavhasini kiriting',
+        # 'title': 'Forum sarlavhasini kiriting',
         'short_description': 'Qisqa tavsif...',
         'facebook': 'https://facebook.com/sahifa',
         'instagram': 'https://instagram.com/username',
@@ -121,6 +121,8 @@ class EventAdmin(DescriptionMixin, AdminTranslation):
         'address': 'Toshkent sh., Amir Temur ko\'chasi 1',
         'short_description': 'Tadbir haqida qisqa ma\'lumot...',
     }
+    
+    prepopulated_fields = {"slug": ("title",)}
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'location':

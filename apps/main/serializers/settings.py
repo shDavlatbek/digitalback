@@ -1,8 +1,11 @@
 from rest_framework import serializers
+from django.utils import timezone
 from ..models import MainSettings
 
 
 class MainSettingsSerializer(serializers.ModelSerializer):
+    menu_timer = serializers.SerializerMethodField()
+
     class Meta:
         model = MainSettings
         fields = [
@@ -12,3 +15,10 @@ class MainSettingsSerializer(serializers.ModelSerializer):
             'facebook', 'instagram', 'youtube', 'x', 'quote',
             'phone_number', 'email', 'address',
         ]
+
+    def get_menu_timer(self, obj):
+        if obj.menu_timer:
+            now = timezone.now()
+            diff = obj.menu_timer - now
+            return int(diff.total_seconds() * 1000)  # returning difference in milliseconds
+        return None
