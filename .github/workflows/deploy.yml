@@ -17,10 +17,10 @@ jobs:
       - name: Deploy prod
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          cd /home/xensa/digital/backend
+          cd /home/xensa/digital/backend  
           git pull origin main
-          docker compose -f prod.yml down
-          docker compose -f prod.yml up -d --build
+          sudo docker compose -f prod.yml down
+          sudo docker compose -f prod.yml up -d --build
 
       # === DEV branch deploy ===
       # - name: Deploy dev
