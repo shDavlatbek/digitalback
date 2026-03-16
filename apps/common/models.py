@@ -28,11 +28,13 @@ class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan sana")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan sana")
     is_active = models.BooleanField(default=True, verbose_name="Faoligi")
-    
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name="Tartib")
+
     objects = ActiveManager()
-    
+
     class Meta:
         abstract = True
+        ordering = ['order']
 
 
 ################################################

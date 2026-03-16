@@ -55,7 +55,8 @@ services:
       
       # Security settings  
       - IMGPROXY_MAX_SRC_FILE_SIZE=50000000  # 50MB max source file
-      - IMGPROXY_ALLOWED_SOURCES=https://*.e-bmsm.uz/
+      - IMGPROXY_ALLOWED_SOURCES=local:///,https://cdn.e-bmsm.uz/,https://*.e-bmsm.uz/
+      - IMGPROXY_LOCAL_FILESYSTEM_ROOT=/usr/src/app/media
       
       # Caching and performance
       - IMGPROXY_CACHE_CONTROL_PASSTHROUGH=true
@@ -65,7 +66,7 @@ services:
       - IMGPROXY_WORKERS=${IMGPROXY_WORKERS:-4}
       
       # Remove watermark
-      - IMGPROXY_WATERMARK_OPACITY=0.0000001
+      # - IMGPROXY_WATERMARK_OPACITY=0.0000001
     ports:
       - "8080:8080"
     volumes:

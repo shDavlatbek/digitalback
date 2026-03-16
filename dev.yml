@@ -34,7 +34,8 @@ services:
       
       # Security settings
       - IMGPROXY_MAX_SRC_FILE_SIZE=50000000  # 50MB max source file
-      - IMGPROXY_ALLOWED_SOURCES=https://*.e-bmsm.uz/,localhost,127.0.0.1
+      - IMGPROXY_ALLOWED_SOURCES=local:///,http://localhost,http://127.0.0.1,https://cdn.e-bmsm.uz/
+      - IMGPROXY_LOCAL_FILESYSTEM_ROOT=/usr/src/app/media
       
       # Caching
       - IMGPROXY_CACHE_CONTROL_PASSTHROUGH=true

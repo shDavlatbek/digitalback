@@ -1,4 +1,5 @@
 from django.utils.text import slugify
+from adminsortable2.admin import SortableAdminMixin
 from modeltranslation.admin import TabbedTranslationAdmin
 from django.db.models import QuerySet
 
@@ -56,6 +57,15 @@ class SlugifyMixin:
 class DescriptionMixin:
     class Media:
         js = ("js/admin_description.js",)
+
+
+class SortableAdminMixinCustom(SortableAdminMixin):
+    class Media:
+        css = {
+            "all": (
+                "css/sortable_admin.css",
+            ),
+        }
 
 
 class AdminTranslation(TabbedTranslationAdmin):

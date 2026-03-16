@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.html import strip_tags 
+from django.utils.translation import gettext_lazy as _
 from apps.common.mixins import SlugifyMixin
 from tinymce.models import HTMLField
 from apps.common.fields import MiniHTMLField
@@ -9,7 +10,6 @@ from django.core.validators import FileExtensionValidator
 from apps.common.models import BaseModel
 from apps.common.utils import generate_upload_path
 from apps.common.validators import file_size, file_size_50
-
 
 # =============================================
 # MAIN SECTION - Settings (Singletons)
@@ -84,13 +84,15 @@ class Event(SlugifyMixin, BaseModel):
     content = HTMLField(verbose_name="Tafsilot")
     location = models.CharField(max_length=500, verbose_name="Joylashuv")
 
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
+
     def image_tag(self):
         if self.image:
             return mark_safe(f'<img src="{self.image.url}" style="height: 50px; object-fit: cover;" />')
         return ""
 
     def __str__(self):
-        return self.title
+        return strip_tags(self.title)
     
     def save(self, *args, **kwargs):
         if not self.slug: # Only slugify if the slug is not already set
@@ -100,7 +102,7 @@ class Event(SlugifyMixin, BaseModel):
     class Meta:
         verbose_name = "Tadbir"
         verbose_name_plural = "Tadbirlar"
-        ordering = ['-start_date']
+        ordering = ['order', '-start_date']
         constraints = [
             models.UniqueConstraint(
                 fields=['slug'],
@@ -120,13 +122,15 @@ class EventSchedule(BaseModel):
     start_time = models.TimeField(verbose_name="Boshlanish vaqti")
     end_time = models.TimeField(verbose_name="Tugash vaqti")
 
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
+
     def __str__(self):
-        return f"{self.event.title} - {self.name}"
+        return f"{strip_tags(self.event.title)} - {self.name}"
 
     class Meta:
         verbose_name = "Kun tartibi"
         verbose_name_plural = "Kun tartibi"
-        ordering = ['date', 'start_time']
+        ordering = ['order', 'date', 'start_time']
 
 
 class Speaker(BaseModel):
@@ -146,6 +150,8 @@ class Speaker(BaseModel):
     profession = models.CharField(max_length=500, verbose_name="Lavozimi", null=True, blank=True)
     content = HTMLField(verbose_name="Tafsilot", null=True, blank=True)
 
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
+
     def image_tag(self):
         if self.image:
             return mark_safe(f'<img src="{self.image.url}" style="height: 50px; object-fit: cover; border-radius: 50%;" />')
@@ -157,6 +163,7 @@ class Speaker(BaseModel):
     class Meta:
         verbose_name = "Spiker"
         verbose_name_plural = "Spikerlar"
+        ordering = ['order']
 
 
 MEDIA_TYPE_CHOICES = [
@@ -188,6 +195,8 @@ class EventMedia(BaseModel):
         help_text="Fayl 50 MB dan katta bo'lishi mumkin emas."
     )
     url = models.URLField(verbose_name="Havola", null=True, blank=True)
+    
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
 
     def __str__(self):
         return f"{self.name} ({self.get_type_display()})"
@@ -195,6 +204,7 @@ class EventMedia(BaseModel):
     class Meta:
         verbose_name = "Tadbir mediasi"
         verbose_name_plural = "Tadbir medialari"
+        ordering = ['order']
 
 
 class News(BaseModel):
@@ -208,6 +218,8 @@ class News(BaseModel):
     title = MiniHTMLField(verbose_name="Sarlavha")
     slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
     content = HTMLField(verbose_name="Tafsilot")
+    
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
 
     def image_tag(self):
         if self.image:
@@ -220,12 +232,12 @@ class News(BaseModel):
         super(News, self).save(*args, **kwargs)
     
     def __str__(self):
-        return self.title
+        return strip_tags(self.title)
 
     class Meta:
         verbose_name = "Yangilik"
         verbose_name_plural = "Yangiliklar"
-        ordering = ['-created_at']
+        ordering = ['order', '-created_at']
 
 
 class Supporter(BaseModel):
@@ -236,6 +248,8 @@ class Supporter(BaseModel):
         help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
     )
     company_name = models.CharField(max_length=500, verbose_name="Kompaniya nomi")
+
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
 
     def logo_tag(self):
         if self.logo:
@@ -248,6 +262,7 @@ class Supporter(BaseModel):
     class Meta:
         verbose_name = "Qo'llab-quvvatlovchi"
         verbose_name_plural = "Qo'llab-quvvatlovchilar"
+        ordering = ['order']
 
 
 class Sponsor(BaseModel):
@@ -258,6 +273,8 @@ class Sponsor(BaseModel):
         help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
     company_name = models.CharField(max_length=500, verbose_name="Kompaniya nomi")
+
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
 
     def logo_tag(self):
         if self.logo:
@@ -270,11 +287,14 @@ class Sponsor(BaseModel):
     class Meta:
         verbose_name = "Homiy"
         verbose_name_plural = "Homiylar"
+        ordering = ['order']
 
 
 class FAQ(BaseModel):
     question = models.CharField(max_length=500, verbose_name="Savol")
     answer = HTMLField(verbose_name="Javob")
+
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
 
     def __str__(self):
         return self.question
@@ -282,6 +302,7 @@ class FAQ(BaseModel):
     class Meta:
         verbose_name = "FAQ"
         verbose_name_plural = "FAQ"
+        ordering = ['order']
 
 
 class Comment(BaseModel):
@@ -296,6 +317,8 @@ class Comment(BaseModel):
     profession = models.CharField(max_length=500, verbose_name="Lavozimi")
     comment = HTMLField(verbose_name="Izoh")
 
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
+
     def image_tag(self):
         if self.image:
             return mark_safe(f'<img src="{self.image.url}" style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%;" />')
@@ -307,7 +330,7 @@ class Comment(BaseModel):
     class Meta:
         verbose_name = "Izoh"
         verbose_name_plural = "Izohlar"
-        ordering = ['-created_at']
+        ordering = ['order', '-created_at']
 
 
 class PastForum(BaseModel):
@@ -320,6 +343,8 @@ class PastForum(BaseModel):
     )
     name = models.CharField(max_length=500, verbose_name="Nomi")
 
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
+
     def image_tag(self):
         if self.image:
             return mark_safe(f'<img src="{self.image.url}" style="height: 50px; object-fit: cover;" />')
@@ -331,6 +356,7 @@ class PastForum(BaseModel):
     class Meta:
         verbose_name = "O'tgan forum"
         verbose_name_plural = "O'tgan forumlar"
+        ordering = ['order']
 
 
 # =============================================

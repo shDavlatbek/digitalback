@@ -1,5 +1,6 @@
 from django.contrib import admin
-from apps.common.mixins import DescriptionMixin, AdminTranslation
+from adminsortable2.admin import SortableInlineAdminMixin
+from apps.common.mixins import DescriptionMixin, AdminTranslation, SortableAdminMixinCustom
 from modeltranslation.admin import TranslationTabularInline
 from modeltranslation import settings as mt_settings
 from django.utils.safestring import mark_safe
@@ -14,7 +15,7 @@ from apps.common.widgets import LeafletLocationWidget
 
 @admin.register(models.MainSettings)
 class MainSettingsAdmin(AdminTranslation):
-    exclude = ('is_active',)
+    exclude = ('is_active', 'order')
     list_display = ('__str__', 'created_at')
 
     fieldsets = (
@@ -70,7 +71,7 @@ class MainSettingsAdmin(AdminTranslation):
 # WEB SECTION - Content
 # =============================================
 
-class EventScheduleInline(TranslationTabularInline):
+class EventScheduleInline(SortableInlineAdminMixin, TranslationTabularInline):
     model = models.EventSchedule
     extra = 0
 
@@ -86,7 +87,7 @@ class EventScheduleInline(TranslationTabularInline):
         }
 
 
-class SpeakerInline(TranslationTabularInline):
+class SpeakerInline(SortableInlineAdminMixin, TranslationTabularInline):
     model = models.Speaker
     extra = 0
 
@@ -102,13 +103,13 @@ class SpeakerInline(TranslationTabularInline):
         }
 
 
-class EventMediaInline(admin.TabularInline):
+class EventMediaInline(SortableInlineAdminMixin, admin.TabularInline):
     model = models.EventMedia
     extra = 0
 
 
 @admin.register(models.Event)
-class EventAdmin(DescriptionMixin, AdminTranslation):
+class EventAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
     list_display = ('image_tag', 'title', 'start_date', 'end_date', 'location', 'is_active')
     list_display_links = ('image_tag', 'title')
     list_filter = ('is_active', 'start_date')
@@ -121,8 +122,6 @@ class EventAdmin(DescriptionMixin, AdminTranslation):
         'address': 'Toshkent sh., Amir Temur ko\'chasi 1',
         'short_description': 'Tadbir haqida qisqa ma\'lumot...',
     }
-    
-    prepopulated_fields = {"slug": ("title",)}
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'location':
@@ -134,7 +133,7 @@ class EventAdmin(DescriptionMixin, AdminTranslation):
 
 
 @admin.register(models.News)
-class NewsAdmin(DescriptionMixin, AdminTranslation):
+class NewsAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
     list_display = ('image_tag', 'title', 'is_active', 'created_at')
     list_display_links = ('image_tag', 'title')
     list_filter = ('is_active', 'created_at')
@@ -142,7 +141,7 @@ class NewsAdmin(DescriptionMixin, AdminTranslation):
 
 
 @admin.register(models.Supporter)
-class SupporterAdmin(AdminTranslation):
+class SupporterAdmin(SortableAdminMixinCustom, AdminTranslation):
     list_display = ('logo_tag', 'company_name', 'is_active')
     list_display_links = ('logo_tag', 'company_name')
     list_filter = ('is_active',)
@@ -150,7 +149,7 @@ class SupporterAdmin(AdminTranslation):
 
 
 @admin.register(models.Sponsor)
-class SponsorAdmin(AdminTranslation):
+class SponsorAdmin(SortableAdminMixinCustom, AdminTranslation):
     list_display = ('logo_tag', 'company_name', 'is_active')
     list_display_links = ('logo_tag', 'company_name')
     list_filter = ('is_active',)
@@ -158,14 +157,14 @@ class SponsorAdmin(AdminTranslation):
 
 
 @admin.register(models.FAQ)
-class FAQAdmin(AdminTranslation):
+class FAQAdmin(SortableAdminMixinCustom, AdminTranslation):
     list_display = ('question', 'is_active')
     list_filter = ('is_active',)
     search_fields = ('question', 'answer')
 
 
 @admin.register(models.Comment)
-class CommentAdmin(AdminTranslation):
+class CommentAdmin(SortableAdminMixinCustom, AdminTranslation):
     list_display = ('image_tag', 'full_name', 'profession', 'is_active', 'created_at')
     list_display_links = ('image_tag', 'full_name')
     list_filter = ('is_active', 'created_at')
@@ -173,10 +172,26 @@ class CommentAdmin(AdminTranslation):
 
 
 @admin.register(models.PastForum)
-class PastForumAdmin(AdminTranslation):
+class PastForumAdmin(SortableAdminMixinCustom, AdminTranslation):
     list_display = ('image_tag', 'name', 'is_active')
     list_display_links = ('image_tag', 'name')
     list_filter = ('is_active',)
+    search_fields = ('name',)
+
+
+@admin.register(models.Speaker)
+class SpeakerAdmin(SortableAdminMixinCustom, AdminTranslation):
+    list_display = ('image_tag', 'full_name', 'event', 'profession', 'is_active')
+    list_display_links = ('image_tag', 'full_name')
+    list_filter = ('is_active', 'event')
+    search_fields = ('full_name', 'profession')
+
+
+@admin.register(models.EventMedia)
+class EventMediaAdmin(SortableAdminMixinCustom, admin.ModelAdmin):
+    list_display = ('name', 'event', 'type', 'date', 'is_active')
+    list_display_links = ('name',)
+    list_filter = ('is_active', 'type', 'event')
     search_fields = ('name',)
 
 

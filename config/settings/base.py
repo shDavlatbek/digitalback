@@ -50,6 +50,7 @@ THIRD_APPS = [
     'corsheaders',
     'django_filters',
     'tinymce',
+    'adminsortable2',
 
     'django_cleanup.apps.CleanupConfig',
 ]

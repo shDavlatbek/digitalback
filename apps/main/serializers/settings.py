@@ -1,10 +1,12 @@
 from rest_framework import serializers
 from django.utils import timezone
+from apps.common.imgproxy import ImgproxyImageField
 from ..models import MainSettings
 
 
 class MainSettingsSerializer(serializers.ModelSerializer):
     menu_timer = serializers.SerializerMethodField()
+    logo = ImgproxyImageField(imgproxy_options={'quality': 90, 'width': 800})
 
     class Meta:
         model = MainSettings

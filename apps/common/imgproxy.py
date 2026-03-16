@@ -136,4 +136,35 @@ def get_preset_url(source_url: str, preset: str, quality: int = 85) -> str:
     options = PRESET_SIZES[preset].copy()
     options['quality'] = quality
     
-    return imgproxy.build_url(source_url, **options) 
+    return imgproxy.build_url(source_url, **options)
+
+
+# ──────────────────────────────────────────────
+# DRF Serializer Field
+# ──────────────────────────────────────────────
+
+from rest_framework import serializers as drf_serializers
+
+
+class ImgproxyImageField(drf_serializers.ImageField):
+    """Serializer field that wraps image URLs through imgproxy."""
+
+    def __init__(self, *args, imgproxy_options=None, **kwargs):
+        self.imgproxy_options = imgproxy_options or {}
+        self.imgproxy_options.setdefault('format', 'webp')
+        super().__init__(*args, **kwargs)
+
+    def to_representation(self, value):
+        if not value:
+            return None
+
+        request = self.context.get('request')
+        if request:
+            original_url = request.build_absolute_uri(value.url)
+        else:
+            original_url = value.url
+
+        return {
+            'original': original_url,
+            'optimized': build_imgproxy_url(f"local:///{value.name}", **self.imgproxy_options),
+        }
