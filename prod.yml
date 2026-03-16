@@ -1,39 +1,41 @@
 services:
   web:
-    container_name: bmsb-backend
+    container_name: digital-backend
     build: .
     restart: always
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     volumes:
       - ./static:/app/static
       - ./media:/app/media
-    env_file:
-      - .env
+      - ./:/app
+    # env_file:
+    #   - .env
     environment:
-      - DB_HOST=db
+      # - DB_HOST=db
+      - CSRF_TRUSTED_ORIGINS=["https://digital.foreach.group","https://*.foreach.group"]
     ports:
-      - "8000:8000"
+      - "6007:8000"
 
-  db:
-    image: postgres:16
-    restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
-    # ports:
-    #   - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  # db:
+  #   image: postgres:16
+  #   restart: always
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #     - POSTGRES_USER=${DB_USER}
+  #     - POSTGRES_DB=${DB_NAME}
+  #   # ports:
+  #   #   - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
 
   imgproxy:
     image: ghcr.io/imgproxy/imgproxy:latest
@@ -68,7 +70,7 @@ services:
       # Remove watermark
       # - IMGPROXY_WATERMARK_OPACITY=0.0000001
     ports:
-      - "8080:8080"
+      - "6008:8080"
     volumes:
       - ./media:/usr/src/app/media:ro  # Read-only access to media files
 
