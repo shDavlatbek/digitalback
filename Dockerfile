@@ -18,8 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies
 COPY requirements/base.txt /app/
 COPY requirements/prod.txt /app/
-RUN pip install --upgrade pip && \
-    pip install -r prod.txt
+RUN pip install --upgrade pip uv && \
+    uv pip install --system -r prod.txt
 
 # Copy project
 COPY . /app/
