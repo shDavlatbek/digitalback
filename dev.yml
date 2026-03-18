@@ -16,7 +16,7 @@ services:
       - "8020:8020"
 
   imgproxy:
-    image: ghcr.io/imgproxy/imgproxy:latest
+    image: ghcr.io/imgproxy/imgproxy:v3
     restart: always
     environment:
       # Disable signature checking completely (no IMGPROXY_KEY or IMGPROXY_SALT)
@@ -43,7 +43,7 @@ services:
       - IMGPROXY_TTL=2592000  # 30 days cache
       
       # Optional: Remove watermark
-      - IMGPROXY_WATERMARK_OPACITY=0.0000001
+      # - IMGPROXY_WATERMARK_OPACITY=0.0000001
     ports:
       - "8081:8080"
     volumes:

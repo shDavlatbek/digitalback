@@ -38,7 +38,7 @@ services:
   #     retries: 5
 
   imgproxy:
-    image: ghcr.io/imgproxy/imgproxy:latest
+    image: ghcr.io/imgproxy/imgproxy:v3
     container_name: bmsb-imgproxy
     restart: always
     environment:
@@ -46,8 +46,8 @@ services:
       # This enables true insecure mode
       
       # Automatic format detection based on Accept header
-      - IMGPROXY_ENABLE_WEBP_DETECTION=true
-      - IMGPROXY_ENABLE_AVIF_DETECTION=true
+      - IMGPROXY_AUTO_WEBP=true
+      - IMGPROXY_AUTO_AVIF=true
       
       # Performance settings
       - IMGPROXY_MAX_SRC_DIMENSION=8192

@@ -13,4 +13,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+
+IMGPROXY_BASE_URL = env.str('IMGPROXY_BASE_URL', 'http://localhost:6008')
 # CORS_ALLOW_HEADERS = list(default_headers) + ["School"]
