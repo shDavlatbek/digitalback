@@ -1,7 +1,7 @@
 from modeltranslation.translator import translator, TranslationOptions
 from .models import (
     MainSettings,
-    Event, EventSchedule, Speaker, EventMedia, News,
+    Event, EventSchedule, Speaker, EventMedia, News, NewsMedia,
     Supporter, Sponsor, FAQ, Comment, PastForum,
 )
 
@@ -66,7 +66,13 @@ translator.register(Event, EventTranslationOptions)
 translator.register(EventSchedule, EventScheduleTranslationOptions)
 translator.register(Speaker, SpeakerTranslationOptions)
 translator.register(EventMedia, EventMediaTranslationOptions)
+class NewsMediaTranslationOptions(TranslationOptions):
+    fields = ('name',)
+    required_languages = ('uz',)
+
+
 translator.register(News, NewsTranslationOptions)
+translator.register(NewsMedia, NewsMediaTranslationOptions)
 translator.register(Supporter, SupporterTranslationOptions)
 translator.register(Sponsor, SponsorTranslationOptions)
 translator.register(FAQ, FAQTranslationOptions)

@@ -1,14 +1,31 @@
 from rest_framework import serializers
 from apps.common.imgproxy import ImgproxyImageField
-from ..models import News, Supporter, Sponsor, FAQ, Comment, PastForum
+from ..models import News, NewsMedia, Supporter, Sponsor, FAQ, Comment, PastForum
 
 
-class NewsSerializer(serializers.ModelSerializer):
+class NewsMediaSerializer(serializers.ModelSerializer):
+    type_display = serializers.CharField(source='get_type_display', read_only=True)
+
+    class Meta:
+        model = NewsMedia
+        fields = ['id', 'name', 'type', 'type_display', 'file', 'url', 'order']
+
+
+class NewsListSerializer(serializers.ModelSerializer):
     image = ImgproxyImageField(imgproxy_options={'quality': 80, 'width': 1200})
 
     class Meta:
         model = News
         fields = ['id', 'title', 'slug', 'image', 'content', 'created_at', 'order']
+
+
+class NewsDetailSerializer(serializers.ModelSerializer):
+    image = ImgproxyImageField(imgproxy_options={'quality': 90, 'width': 1920})
+    news_media = NewsMediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = News
+        fields = ['id', 'title', 'slug', 'image', 'content', 'created_at', 'order', 'news_media']
 
 
 class SupporterSerializer(serializers.ModelSerializer):
