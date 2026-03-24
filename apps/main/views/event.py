@@ -20,6 +20,11 @@ class SpeakerListView(IsActiveFilterMixin, ListAPIView):
     serializer_class = SpeakerSerializer
 
 
+class SpeakerDetailView(IsActiveFilterMixin, RetrieveAPIView):
+    queryset = Speaker.objects.select_related('event')
+    serializer_class = SpeakerSerializer
+
+
 class EventMediaListView(IsActiveFilterMixin, ListAPIView):
     queryset = EventMedia.objects.select_related('event')
     serializer_class = EventMediaSerializer

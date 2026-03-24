@@ -8,15 +8,33 @@ from django.conf import settings
 
 class SimpleImgproxyUrlBuilder:
     """
-    Simple imgproxy URL builder for insecure mode.
-    Generates URLs in format: /insecure/processing_options/plain/source_url
-    
-    This is for frontend-direct usage where the frontend constructs URLs.
-    Example: https://ipx.lamenu.uz/insecure/rs:fit:128:128:0/q:100/plain/https://cdn.lamenu.uz/image.jpg
+    Imgproxy URL builder with optional signing support.
+
+    When IMGPROXY_KEY and IMGPROXY_SALT are set in Django settings (hex-encoded),
+    generates signed URLs: /{signature}/processing_options/plain/source_url
+
+    Otherwise falls back to insecure mode: /insecure/processing_options/plain/source_url
+
+    Reference: https://docs.imgproxy.net/usage/signing_url
     """
-    
-    def __init__(self, base_url: str = None):
+
+    def __init__(self, base_url: str = None, key: str = None, salt: str = None):
         self.base_url = (base_url or getattr(settings, 'IMGPROXY_BASE_URL', 'http://localhost:8080')).rstrip('/')
+
+        key_hex = key or getattr(settings, 'IMGPROXY_KEY', None)
+        salt_hex = salt or getattr(settings, 'IMGPROXY_SALT', None)
+
+        if key_hex and salt_hex:
+            self.key = bytes.fromhex(key_hex)
+            self.salt = bytes.fromhex(salt_hex)
+        else:
+            self.key = None
+            self.salt = None
+
+    def _sign(self, path: str) -> str:
+        """Sign path using HMAC SHA256 with key and salt, return URL-safe base64."""
+        digest = hmac.new(self.key, msg=self.salt + path.encode(), digestmod=hashlib.sha256).digest()
+        return base64.urlsafe_b64encode(digest).rstrip(b'=').decode()
         
     def build_url(
         self,
@@ -62,25 +80,32 @@ class SimpleImgproxyUrlBuilder:
         if quality:
             options.append(f"q:{quality}")
             
-        # Format
-        if format:
-            options.append(f"f:{format}")
-            
         # Additional options
         for key, value in kwargs.items():
             if value is not None:
                 options.append(f"{key}:{value}")
-        
-        # Build URL
+
+        # Build path (everything after base_url)
         processing_options = "/".join(options) if options else ""
-        url_parts = [self.base_url, "insecure"]
-        
+        path_parts = []
+
         if processing_options:
-            url_parts.append(processing_options)
-            
-        url_parts.extend(["plain", source_url])
-        
-        return "/".join(url_parts)
+            path_parts.append(processing_options)
+
+        encoded_source = base64.urlsafe_b64encode(source_url.encode()).rstrip(b'=').decode()
+
+        # Append format as extension on encoded source URL instead of as a processing option
+        if format:
+            encoded_source += f".{format}"
+        path_parts.append(encoded_source)
+        path = "/" + "/".join(path_parts)
+
+        if self.key and self.salt:
+            signature = self._sign(path)
+        else:
+            signature = "insecure"
+
+        return f"{self.base_url}/{signature}{path}"
 
 
 # Global instance

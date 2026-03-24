@@ -1,6 +1,6 @@
 from django.urls import path
 from .views.settings import MainSettingsView
-from .views.event import EventListView, EventDetailView, SpeakerListView, EventMediaListView
+from .views.event import EventListView, EventDetailView, SpeakerListView, SpeakerDetailView, EventMediaListView
 from .views.content import (
     NewsListView, NewsDetailView, SupporterListView, SponsorListView,
     FAQListView, CommentListView, PastForumListView,
@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Speaker & Media endpoints
     path('speakers/', SpeakerListView.as_view(), name='speaker-list'),
+    path('speakers/<int:pk>/', SpeakerDetailView.as_view(), name='speaker-detail'),
     path('event-media/', EventMediaListView.as_view(), name='event-media-list'),
 
     # Content endpoints
