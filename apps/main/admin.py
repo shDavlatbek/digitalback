@@ -22,6 +22,10 @@ class MainSettingsAdmin(AdminTranslation):
         ('Asosiy', {
             'fields': ('logo', 'title', 'short_description', 'menu_timer', 'location', 'quote')
         }),
+        ('Hero Video', {
+            'fields': ('hero_video_file', 'hero_video_url'),
+            'description': 'Video fayl yuklansa, YouTube havolasidan ustunlik oladi. Agar ikkalasi ham bo\'sh bo\'lsa, standart rasm ko\'rsatiladi.',
+        }),
         ('Raqamlar', {
             'fields': ('main_participants', 'top_managers', 'department_personnel', 'sponsors_and_partners')
         }),
@@ -107,6 +111,9 @@ class EventMediaInline(SortableInlineAdminMixin, admin.TabularInline):
     model = models.EventMedia
     extra = 0
 
+    class Media:
+        js = ('js/admin_media_toggle.js',)
+
 
 @admin.register(models.Event)
 class EventAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
@@ -132,12 +139,21 @@ class EventAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
         return field
 
 
+class NewsMediaInline(SortableInlineAdminMixin, admin.TabularInline):
+    model = models.NewsMedia
+    extra = 0
+
+    class Media:
+        js = ('js/admin_media_toggle.js',)
+
+
 @admin.register(models.News)
 class NewsAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
     list_display = ('image_tag', 'title', 'is_active', 'created_at')
     list_display_links = ('image_tag', 'title')
     list_filter = ('is_active', 'created_at')
     search_fields = ('title', 'content')
+    inlines = [NewsMediaInline]
 
 
 @admin.register(models.Supporter)
@@ -192,6 +208,14 @@ class EventMediaAdmin(SortableAdminMixinCustom, admin.ModelAdmin):
     list_display = ('name', 'event', 'type', 'date', 'is_active')
     list_display_links = ('name',)
     list_filter = ('is_active', 'type', 'event')
+    search_fields = ('name',)
+
+
+@admin.register(models.NewsMedia)
+class NewsMediaAdmin(SortableAdminMixinCustom, admin.ModelAdmin):
+    list_display = ('name', 'news', 'type', 'is_active')
+    list_display_links = ('name',)
+    list_filter = ('is_active', 'type', 'news')
     search_fields = ('name',)
 
 

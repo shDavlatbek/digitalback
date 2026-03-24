@@ -26,6 +26,19 @@ class MainSettings(BaseModel):
     short_description = MiniHTMLField(verbose_name="Qisqa Tavsif", null=True, blank=True)
     menu_timer = models.DateTimeField(verbose_name="Bosh menyu Timer", null=True, blank=True)
 
+    hero_video_url = models.URLField(
+        verbose_name="Hero video havolasi (YouTube)",
+        null=True, blank=True,
+        help_text="YouTube video havolasi. Agar ko'rsatilsa, bosh sahifada rasm o'rniga video ko'rsatiladi."
+    )
+    hero_video_file = models.FileField(
+        upload_to=generate_upload_path,
+        verbose_name="Hero video fayl",
+        validators=[file_size_50],
+        null=True, blank=True,
+        help_text="Video fayl (50 MB gacha). YouTube havolasidan ustunlik oladi."
+    )
+
     # Section description texts
     main_participants = models.SmallIntegerField(
         verbose_name="Asosiy qatnashchilar",
@@ -238,6 +251,39 @@ class News(BaseModel):
         verbose_name = "Yangilik"
         verbose_name_plural = "Yangiliklar"
         ordering = ['order', '-created_at']
+
+
+class NewsMedia(BaseModel):
+    name = models.CharField(max_length=500, verbose_name="Nomi")
+    news = models.ForeignKey(
+        News, on_delete=models.CASCADE,
+        verbose_name="Yangilik",
+        related_name="news_media",
+    )
+    type = models.CharField(
+        max_length=10,
+        choices=MEDIA_TYPE_CHOICES,
+        default='image',
+        verbose_name="Turi"
+    )
+    file = models.FileField(
+        upload_to=generate_upload_path,
+        verbose_name="Fayl",
+        validators=[file_size_50],
+        null=True, blank=True,
+        help_text="Fayl 50 MB dan katta bo'lishi mumkin emas."
+    )
+    url = models.URLField(verbose_name="Havola", null=True, blank=True)
+
+    order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))
+
+    def __str__(self):
+        return f"{self.name} ({self.get_type_display()})"
+
+    class Meta:
+        verbose_name = "Yangilik mediasi"
+        verbose_name_plural = "Yangilik medialari"
+        ordering = ['order']
 
 
 class Supporter(BaseModel):

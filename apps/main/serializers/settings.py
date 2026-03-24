@@ -16,6 +16,7 @@ class MainSettingsSerializer(serializers.ModelSerializer):
             'department_personnel', 'sponsors_and_partners', 'location',
             'facebook', 'instagram', 'youtube', 'x', 'quote',
             'phone_number', 'email', 'address',
+            'hero_video_url', 'hero_video_file',
         ]
 
     def get_menu_timer(self, obj):
