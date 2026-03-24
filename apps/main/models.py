@@ -88,6 +88,18 @@ class Event(SlugifyMixin, BaseModel):
         null=True, blank=True,
         help_text="Rasm 50 MB dan katta bo'lishi mumkin emas."
     )
+    video_url = models.URLField(
+        verbose_name="Video havolasi (YouTube)",
+        null=True, blank=True,
+        help_text="YouTube video havolasi. Rasm o'rniga video ko'rsatiladi."
+    )
+    video_file = models.FileField(
+        upload_to=generate_upload_path,
+        verbose_name="Video fayl",
+        validators=[file_size_50],
+        null=True, blank=True,
+        help_text="Video fayl (50 MB gacha). YouTube havolasidan ustunlik oladi."
+    )
     title = MiniHTMLField(verbose_name="Sarlavha")
     slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
     short_description = MiniHTMLField(verbose_name="Qisqa tavsif", null=True, blank=True)

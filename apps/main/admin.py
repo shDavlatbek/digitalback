@@ -107,12 +107,21 @@ class SpeakerInline(SortableInlineAdminMixin, TranslationTabularInline):
         }
 
 
-class EventMediaInline(SortableInlineAdminMixin, admin.TabularInline):
+class EventMediaInline(SortableInlineAdminMixin, TranslationTabularInline):
     model = models.EventMedia
     extra = 0
 
     class Media:
-        js = ('js/admin_media_toggle.js',)
+        js = (
+            "admin/js/jquery.init.js",
+            "modeltranslation/js/force_jquery.js",
+            mt_settings.JQUERY_UI_URL,
+            "modeltranslation/js/tabbed_translation_fields.js",
+            "js/admin_media_toggle.js",
+        )
+        css = {
+            "all": ("modeltranslation/css/tabbed_translation_fields.css", "css/admin_translation.css",),
+        }
 
 
 @admin.register(models.Event)
@@ -139,12 +148,21 @@ class EventAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
         return field
 
 
-class NewsMediaInline(SortableInlineAdminMixin, admin.TabularInline):
+class NewsMediaInline(SortableInlineAdminMixin, TranslationTabularInline):
     model = models.NewsMedia
     extra = 0
 
     class Media:
-        js = ('js/admin_media_toggle.js',)
+        js = (
+            "admin/js/jquery.init.js",
+            "modeltranslation/js/force_jquery.js",
+            mt_settings.JQUERY_UI_URL,
+            "modeltranslation/js/tabbed_translation_fields.js",
+            "js/admin_media_toggle.js",
+        )
+        css = {
+            "all": ("modeltranslation/css/tabbed_translation_fields.css", "css/admin_translation.css",),
+        }
 
 
 @admin.register(models.News)
