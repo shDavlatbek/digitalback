@@ -14,7 +14,7 @@ services:
     #   - .env
     environment:
       # - DB_HOST=db
-      - CSRF_TRUSTED_ORIGINS=["https://digital.foreach.group","https://*.foreach.group"]
+      - CSRF_TRUSTED_ORIGINS=["https://digital.foreach.group","https://api.digital.foreach.group"]
     ports:
       - "6007:8000"
 
