@@ -100,9 +100,9 @@ class Event(SlugifyMixin, BaseModel):
         null=True, blank=True,
         help_text="Video fayl (50 MB gacha). YouTube havolasidan ustunlik oladi."
     )
-    title = MiniHTMLField(verbose_name="Sarlavha")
+    title = models.CharField(max_length=255, verbose_name="Sarlavha")
     slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
-    short_description = MiniHTMLField(verbose_name="Qisqa tavsif", null=True, blank=True)
+    short_description = models.CharField(max_length=255, verbose_name="Qisqa tavsif", null=True, blank=True)
     address = models.CharField(max_length=500, verbose_name="Manzil")
     start_date = models.DateTimeField(verbose_name="Boshlanish sanasi")
     end_date = models.DateTimeField(verbose_name="Tugash sanasi", null=True, blank=True)
@@ -240,7 +240,7 @@ class News(BaseModel):
         null=True, blank=True,
         help_text="Rasm 5 MB dan katta bo'lishi mumkin emas."
     )
-    title = MiniHTMLField(verbose_name="Sarlavha")
+    title = models.CharField(max_length=255, verbose_name="Sarlavha")
     slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
     content = HTMLField(verbose_name="Tafsilot")
     
