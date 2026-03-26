@@ -106,6 +106,7 @@ class Event(SlugifyMixin, BaseModel):
     address = models.CharField(max_length=500, verbose_name="Manzil")
     start_date = models.DateTimeField(verbose_name="Boshlanish sanasi")
     end_date = models.DateTimeField(verbose_name="Tugash sanasi", null=True, blank=True)
+    is_archived = models.BooleanField(default=False, verbose_name="Arxivlangan")
     content = HTMLField(verbose_name="Tafsilot")
     location = models.CharField(max_length=500, verbose_name="Joylashuv")
 
@@ -242,6 +243,7 @@ class News(BaseModel):
     )
     title = models.CharField(max_length=255, verbose_name="Sarlavha")
     slug = models.SlugField(max_length=500, verbose_name="Slug", null=True, blank=True)
+    is_archived = models.BooleanField(default=False, verbose_name="Arxivlangan")
     content = HTMLField(verbose_name="Tafsilot")
     
     order = models.PositiveIntegerField(default=0, db_index=True, verbose_name=_("Tartib"))

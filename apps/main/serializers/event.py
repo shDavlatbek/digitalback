@@ -35,7 +35,8 @@ class EventListSerializer(serializers.ModelSerializer):
         model = Event
         fields = [
             'id', 'title', 'slug', 'image', 'address',
-            'start_date', 'end_date', 'short_description', 'location', 'created_at', 'order'
+            'start_date', 'end_date', 'short_description', 'location', 'created_at', 'order',
+            'is_archived',
         ]
 
     def get_short_description(self, obj):
@@ -58,5 +59,6 @@ class EventDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'slug', 'image', 'video_url', 'video_file', 'address',
             'start_date', 'end_date', 'content', 'short_description', 'location',
-            'schedules', 'speakers', 'event_media', 'created_at', 'order'
+            'schedules', 'speakers', 'event_media', 'created_at', 'order',
+            'is_archived',
         ]

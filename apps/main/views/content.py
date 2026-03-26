@@ -8,7 +8,7 @@ from ..serializers.content import (
 
 
 class NewsListView(IsActiveFilterMixin, ListAPIView):
-    queryset = News.objects.all()
+    queryset = News.objects.filter(is_archived=False)
     serializer_class = NewsListSerializer
 
 

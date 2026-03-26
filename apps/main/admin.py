@@ -126,18 +126,30 @@ class EventMediaInline(SortableInlineAdminMixin, TranslationTabularInline):
 
 @admin.register(models.Event)
 class EventAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
-    list_display = ('image_tag', 'title', 'start_date', 'end_date', 'location', 'is_active')
+    list_display = ('image_tag', 'title', 'start_date', 'end_date', 'is_archived', 'location', 'is_active')
     list_display_links = ('image_tag', 'title')
-    list_filter = ('is_active', 'start_date')
+    list_filter = ('is_active', 'is_archived', 'start_date')
+    list_editable = ('is_archived',)
     search_fields = ('title', 'content', 'location')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [EventScheduleInline, SpeakerInline, EventMediaInline]
+    actions = ['mark_archived', 'mark_unarchived']
 
     PLACEHOLDERS = {
         'title': 'Tadbir sarlavhasini kiriting',
         'address': 'Toshkent sh., Amir Temur ko\'chasi 1',
         'short_description': 'Tadbir haqida qisqa ma\'lumot...',
     }
+
+    @admin.action(description="Tanlangan tadbirlarni arxivlash")
+    def mark_archived(self, request, queryset):
+        count = queryset.update(is_archived=True)
+        self.message_user(request, f"{count} ta tadbir arxivlandi.")
+
+    @admin.action(description="Tanlangan tadbirlarni arxivdan chiqarish")
+    def mark_unarchived(self, request, queryset):
+        count = queryset.update(is_archived=False)
+        self.message_user(request, f"{count} ta tadbir arxivdan chiqarildi.")
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'location':
@@ -167,11 +179,23 @@ class NewsMediaInline(SortableInlineAdminMixin, TranslationTabularInline):
 
 @admin.register(models.News)
 class NewsAdmin(SortableAdminMixinCustom, DescriptionMixin, AdminTranslation):
-    list_display = ('image_tag', 'title', 'is_active', 'created_at')
+    list_display = ('image_tag', 'title', 'is_archived', 'is_active', 'created_at')
     list_display_links = ('image_tag', 'title')
-    list_filter = ('is_active', 'created_at')
+    list_filter = ('is_active', 'is_archived', 'created_at')
+    list_editable = ('is_archived',)
     search_fields = ('title', 'content')
     inlines = [NewsMediaInline]
+    actions = ['mark_archived', 'mark_unarchived']
+
+    @admin.action(description="Tanlangan yangiliklarni arxivlash")
+    def mark_archived(self, request, queryset):
+        count = queryset.update(is_archived=True)
+        self.message_user(request, f"{count} ta yangilik arxivlandi.")
+
+    @admin.action(description="Tanlangan yangiliklarni arxivdan chiqarish")
+    def mark_unarchived(self, request, queryset):
+        count = queryset.update(is_archived=False)
+        self.message_user(request, f"{count} ta yangilik arxivdan chiqarildi.")
 
 
 @admin.register(models.Supporter)
